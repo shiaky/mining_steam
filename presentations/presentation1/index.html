@@ -1,0 +1,691 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Privacy im Kontext ubiquitärer Systeme im öffentlichen Personennahverkehr</title>
+
+		<meta name="description" content="Privacy im Kontext ubiquitärer Systeme im öffentlichen Personennahverkehr - Eine fahrgastzentrierte Analyse">
+		<meta name="author" content="Proseminar datenschutz WS 2016/17">
+
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/tudd.css" id="theme">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section class="titlepage">
+
+					<h1>Privacy im Kontext ubiquitärer Systeme im öffentlichen Personennahverkehr</h1>
+					<h2>Eine fahrgastzentrierte Analyse</h3>
+					<img  class="plain addmar" height="100" data-src="img/tu_logo_white.png" alt="TU Logo">
+
+					<p>
+						<small>Proseminar: Datenschutz in der Anwendungsentwicklung</small>
+					</p>
+					<p>
+						<small>WS 2016/17</small>
+					</p>
+				</section>
+
+				<section>
+					<h2>Agenda</h2>
+					<ul>
+					  <li>Einführung</li>
+					  <li>Anforderungen an Ubicomp im ÖPNV</li>
+					  <li>Ubicomp in der Praxis des ÖPNV</li>
+					  <li>Fahrgastbezogene Daten</li>
+					  <li>Daten in der Risikoanalyse</li>
+					  <li>Empfehlungen</li>
+					  <li>Ausblick</li>
+					</ul>
+				</section>
+
+				<!-- Inhaltsteil-->
+				<section>
+					<section>
+						<h2>Einführung</h2>
+					</section>
+					<section>
+						<div class="keypoint">12 Sitzungen</div>
+						<aside class="notes">
+							<ul>
+								<li>haben uns über 12 Sitzungen mit einem ausgewählten Forschungsbereich beschäftigt</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<div class="keypoint">Methodenarbeit & Recherche</div>
+						<aside class="notes">
+							<ul>
+								<li>einige Sitzungen für Methodenarbeit und Recherche</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<div class="keypoint">Themenfindung</div>
+						<aside class="notes">
+							<ul>
+								<li>haben überlegt was im Rahmen von Privacy gerade noch eher unerforschtes Gebiet ist</li>
+								<li>sind daruf gekommen, dass ubiquitious Computing im Verkehr eine große Rolle spielt</li>
+								<li>dabei möglicherweise erhobene Daten kaum Beachtung finden</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<img  height="500" data-src="img/heise_art.png">
+						<aside class="notes">
+							<ul>
+								<li>hoch aktuelles Thema, da gerade politisch überlegt wird,</li>
+								<li>deutschlandweit E-Ticketsysteme für den ÖPNV auszurollen</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<img   height="500" data-src="img/fgis.jpeg">
+						<aside class="notes">
+							<ul>
+								<li>auch neben Tickets erhalten immer mehr ubiquitäre systeme Einzug in den Alltag der Fahrgäste</li>
+								<li>besonders bei kleinen Streckennetzen lohnen für die Betreiber Analysen</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<img  height="500" data-src="img/app.jpg">
+						<aside class="notes">
+							<ul>
+								<li>immer mehr funktionen erhalten Einzug in die Geräte von Nutzern</li>
+								<li>immer mehr können deren Informationen auch für die Fahrdienste genutzt werden</li>
+							</ul>
+						</aside>
+					</section>
+
+					<section>
+						<p><b>Privacy</b> im Kontext <b>ubiquitärer Systeme</b> im öffentlichen Personennahverkehr. Eine fahrgastzentrierte Analyse</p>
+						<aside class="notes">
+							<ul>
+								<li>haben uns letztendlich auf genau dieses Thema geeinigt</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<div class="keypoint">Privacy</div>
+						<aside class="notes">
+							<ul>
+								<li>Möglichkeit der Fahrgäste sich dem Zugriff von Computern und Sensoren teilweise oder vollkommen entziehen zu können</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<div class="keypoint">Ubiquitärere Systeme</div>
+						<aside class="notes">
+							<ul>
+								<li>„Allgegenwärtiges (Be)rechnen“</li>
+								<li>computersysteme die nicht als solche zu erkennen sind</li>
+								<li>implementieren eine "natürliche MCI"</li>
+							</ul>
+						</aside>
+					</section>
+
+
+				</section>
+
+				<section>
+					<section>
+						<h2>Anforderungen an Ubicomp im ÖPNV</h2>
+					</section>
+					<section>
+						<h3>Allgemeine Anforderungen</h3>
+						<p>'Quality of Service'</p>
+						<aside class="notes">
+							- wie alle Kommunikationsdienste => Anforderungen der Dienstgüte erfuellen<br/>
+							- alle Verbindungen und Kommunikationskanäle gesichert, stabil  und störungsfrei<br/>
+							- die übertragenen Daten korrekt und aktuell<br/>
+							- zuverlässige Auf- beziehungsweise Abbau eines Kanals<br/>
+						</aside>
+					</section>
+					<section>
+						<h3>Strukturelle Anforderungen</h3>
+						<ul>
+							<li>Komponenten in ausreichender Menge</li>
+							<li>unauffällige Integration</li>
+							<li>Kommunikations- und Rechenleistungen</li>
+						</ul>
+						<aside class="notes">
+
+						</aside>
+					</section>
+					<section>
+						<h3>Strategische Anforderungen</h3>
+						<ul>
+							<li>Zusammenspiel der Systemkomponenten und -ressourcen</li>
+							<li>intelligente Kontrollstrukturen</li>
+						</ul>
+						<aside class="notes">
+
+						</aside>
+					</section>
+					<section>
+						<h3>Anforderungen an das Systemdesign</h3>
+						<ul>
+							<li>Wer ist der / sind die Nutzer?</h3></li>
+							<li>Was macht der Nutzer?</li>
+							<li>Wo steigt er ein und aus?</li>
+							<li>Wann ist er unterwegs?</li>
+							<li>Warum nutzt er dieses Verkehrsmittel?</li>
+						</ul>
+						<aside class="notes">
+
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>UbiComp in der Praxis des ÖPNV</h2>
+	                    <ul>
+	                    	<li>E-Ticketsysteme</li>
+	                    	<li>Fahrgastinformationssysteme</li>
+	                    </ul>
+					</section>
+					<section>
+                    	<h3>E-Ticketsysteme</h3>
+                    </section>
+			        <section>
+                        <h3>Allgemeine Funktionsweise</h3>
+                        <ul>
+                            <li>Erwerb von Ticket/Guthaben für Ticketmedium</li>
+                            <li>Einlesen des Mediums beim Ein- und evtl. Aussteigen</li>
+                            <li>Abbuchung beim Ein- oder Aussteigen abhängig vom System</li>
+						</ul>
+                    </section>
+					<section>
+                        <h3>RFID basiert</h3>
+                        <ul>
+                            <li>Technologie für berührungslose Sender-Empfänger Systeme</li>
+                            <li>Nutzt elektromagnetische Wellen Technik</li>
+                            <li>Grundlage vieler gängiger Ticketsysteme</li>
+                            <li>2 Funktionseinheiten: Transponder und Receiver</li>
+                            <li>Transponder speichert Daten, z.B NutzerID zur Authentifizierung</li>
+                            <li>Receiver liest die Daten auf dem Transponder aus</li>
+					    </ul>
+                    </section>
+					<section>
+                        <h3>Smartcard basiert</h3>
+                        <ul>
+                            <li>Kunststoffkarte mit integriertem Chip</li>
+                            <li>RFID zur Kommunikation zwischen Lesegerät und Karte</li>
+                            <li>Meist mit Guthaben genutzt</li>
+                            <li>Speichern von z.B. Jahres- oder Seniorentickets möglich</li>
+                            <li>Optional: Registrierung bei Betreiber für Komfortfunktionen</li>
+                            <li>Beispiele: Oyster Card London, Octopus Card Hong Kong</li>
+					    </ul>
+                    </section>
+					<section>
+                        <h3>NFC basiert</h3>
+                        <ul>
+                            <li>Basiert auf RFID Technik</li>
+                            <li>3 Modi:</li>
+                                <ul>
+                                    <li>Reader: Lesegerät für RFID Geräte</li>
+                                    <li>Card Emulation: emuliert Smartcard</li>
+                                    <li>Peer to Peer: Kommunikation zwischen 2 NFC Geräten</li>
+                                </ul>
+                            <li>Beispiele: Pay-As-You-Go, Touch & Travel der DB</li>
+					    </ul>
+                    </section>
+					<section>
+                        <h3>Gesammelte Daten</h3>
+                        <p>Abhängig von Umsetzung und gesetzlichen Vorgaben</p>
+                        <ul>
+                            <li>Kartennummer</li>
+                            <li>Guthaben</li>
+                            <li>Datum, Uhrzeit, Haltestelle, Route einer Fahrt</li>
+                            <li>Preis, Tickettyp, Zahlungsinformationen eines Bezahlvorgangs</li>
+                            <li>Bei Registrierung: Name, Adresse, Email, ...</li>
+					    </ul>
+                    </section>
+	    			<section>
+                        <h3>Entwicklungsperspektiven</h3>
+                        <ul>
+                            <li>Interoperabilität und kombinierter Verkehr </li>
+                            <aside class="notes">nutzen eines Tickets/mediums in Netzen verschiedern Btreiber und in allen verkehrsmitteln; privacy wichtig da daten durch hände vieler versch. betreiber gehen</aside>
+                            <li>Nutzung von E-Tickets in weiteren Bereichen: Tourismus, Handel, Zahlung, ...
+                            <li>Innovative Anwendungsfelder für NFC:
+                            <ul>
+                                    <li>Produktinformationssystem</li>
+                                    <li>Intelligente Werbeflächen</li>
+                                    <li>Touriusmusapplikationen</li>
+                                </ul>
+                            </li>
+
+					    </ul>
+                    </section>
+					<section>
+						<h3>Fahrgastinformationssysteme</h3>
+					</section>
+					<section>
+						<h3>Fahrgastinformationssysteme</h3>
+						<ul>
+								<li>Einsatz von NFC- oder RFID-Technologie</li>
+								<li>Motivation für die Nutzung von Transportsystemen</li>
+								<li>Bereitstellung von Umstiegsinformationen</li>
+								<li>Verbesserung des Reisekomforts</li>
+						</ul>
+					</section>
+					<section>
+						<h3> Potential für Fahrgäste </h3>
+							<ul>
+								<li>Konzepte zu Indoor-Navigation</li>
+								<li>Echtzeitverfolgung von Verkehrsmitteln</li>
+								<li>Reduktion der empfundenen Wartezeit</li>
+								<li>Nutzung von Social-Media, um </li>
+										<ul>
+											<li>Verbindungen zu teilen</li>
+											<li>Fahrgäste zusammenzubringen</li>
+											<li>Fahrgäste zu meiden</li>
+										</ul>
+								<li>Insgesamt: Reduktion der Reisezeit</li>
+							</ul>
+					</section>
+					<section>
+							<h3> Potential für Dienstleister </h3>
+								<ul>
+										<li> Auslastungsanalyse </li>
+										<li> Erhebung von Nutzerdaten </li>
+										<li> Verbesserung der Auslastung des Verkehrsnetzes </li>
+								</ul>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Fahrgastbezogene Daten</h2>
+						<ul>
+							<li>ortsbezogene Daten</li>
+							<li>zeitbegzogene Daten</li>
+							<li>personenbezogene Daten</li>
+						</ul>
+					</section>
+					<section>
+						<!--
+						<h2>Ortsbezogene Daten</h2>
+						<p class="fragment">Informationen aus Positionsdaten des Fahrgastes</p>
+						<ul>
+							<li class="fragment">Wohnort / Arbeitsplatz </li>
+							<li class="fragment">Freizeitaktivitäten</li>
+						</ul>
+						-->
+						<div class="keypoint">ortsbezogene Daten</div>
+
+						<aside class="notes">
+							<ul>
+								<li>aus Positionsdaten des Fahrgastes gewonnen</li>
+								<li>regelmäßige Aus und Einstiege an best. Haltestellen erkennen</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<!--<h2>Zeitbezogene Daten</h2>
+						<p class="fragment">ortsbezogene Daten + entsprechende Zeitpunkte</p>
+						<ul>
+							<li class="fragment">Arbeitszeiten</li>
+							<li class="fragment">Zeiten der Freizeitaktivitäten</li>
+						</ul>
+						-->
+						<div class="keypoint">zeitbezogene Daten</div>
+						<aside class="notes">
+							<ul>
+								<li>Zeitpunkte der Benutzung oder Bestellung</li>
+								<li>Rückschlüsse auf Arbeitszeiten oder Hobbys</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<!--<h2>Personenbezogene Daten</h2>
+						<ul>
+							<li class="fragment">körperliche Verfassung / Alter</li>
+							<li class="fragment">Freunde</li>
+							<li class="fragment">Autobesitzer?</li>
+						</ul>
+						-->
+						<div class="keypoint">personenbezogene Daten</div>
+						<aside class="notes">
+							<ul>
+								<li>Sitzverhalten</li>
+								<li>Zahlungsdaten, Adresse</li>
+								<li>Kleidungsstil</li>
+								<li>Nähe zu anderen Fahrgästen</li>
+							</ul>
+						</aside>
+					</section>
+
+				</section>
+				<!-- 5.2 Risikoanalyse // 2 Slides (Ziele, Ergebnisse)-->
+				<section>
+					<section>
+						<h2>Daten in der Risikoanalyse</h2>
+					</section>
+					<section>
+						<h3>Ziele</h3>
+						<ul>
+							<li>Umsetzung Datenvermeidung/Datensparsamkeit</li>
+							<li>Schutzbedarf personenbezogener Daten</li>
+							<li>Klassische Schutz(teil-)ziele zur Durchsetzung von <i><strong>Privacy</strong></i></li>
+								<ul>
+									<li>Vertraulichkeit</li>
+									<li>Integrität</li>
+									<li>Verfügbarkeit</li>
+								</ul>
+						</ul>
+					</section>
+					<section>
+							<h3>Ergebnisse</h3>
+							<ul>
+								<li>Bedrohung durch Datenpannen</li>
+										<ul>
+											<li>unberechtigter Zugriff</li>
+											<li>Manipulation</li>
+											<li>Systemausfälle</li>
+										</ul>
+							</ul>
+					</section>
+					<section>
+						<h3>Ergebnisse</h3>
+							<ul>
+								<li>Informationspflicht</li>
+								<ul>
+									<li>öffentliche Wahrnehmung</li>
+									<li>Reputationsverlust</li>
+								</ul>
+							</ul>
+					</section>
+					<section>
+						<h3>Ergebnisse</h3>
+						<ul>
+							<li>Schutzmaßnahmen</li>
+								<ul>
+									<li>Absicherung RFID-Kommunikation</li>
+									<li>Verschlüsselung</li>
+									<li>Zweifaktor-Authentifizierung</li>
+								</ul>
+						</ul>
+					</section>
+					<section>
+						<h3>Data Mining</h3>
+						<p class="fragment fade-up">"Anwendung von Algorithmen auf Daten mit der Zielsetzung, Muster aus Daten zu extrahieren"</p>
+						<p class="fragment fade-up">In unserem Fall:</p>
+						<ul>
+							<li class="fragment fade-up">Bewegungsmuster</li>
+							<li class="fragment fade-up">Personenprofile</li>
+						</ul>
+
+						<aside class="notes">
+							<ul>
+								<li>Definition aus unserem Paper</li>
+
+								<li>Bewegungsmuster aus Positionsdaten des Nutzers</li>
+								<li>Personenprofile aus Bewegungsmuster und der Verbindung von dritten Datenquellen. zB. Marketing</li>
+							</ul>
+						</aside>
+					</section>
+
+				</section>
+				<section>
+					<section>
+						<h2>Empfehlungen für eine privacy-sensible Praxis</h2>
+					</section>
+
+					<section>
+						<h3><p class="fragment">Grundsätze bei der Entwicklung</p></h3>
+						<ul>
+						<li class="fragment fade-up">beratender statt sanktionierendem Datenschutz</li>
+						<li class="fragment fade-up">Wenn eine Person nicht agiert, sollen von ihr auch keine
+        personenbezogenen Daten erfasst werden.</li>
+		<li class="fragment fade-up">Die Interessen aller Beteiligten sollten einbezogen werden,  ohne jedoch die
+        Funktionalität zu beeinträchtigen.</li>
+		<li class="fragment fade-up">Die Entwicklung von
+        Anfang bis Ende unter dem Aspekt der Datensicherheit betrachten</li>
+		<li class="fragment fade-up">Visibility and Transparency als Grundsatz u Prozesse zu testen</li>
+
+
+						</ul>
+					</section>
+					<section>
+						<h3><p class="fragment">Schutzziele</p></h3>
+						<ul>
+						<li class="fragment fade-up">Verfügbarkeit: gesichter Zugriff in
+        festgelegten Zeiten.</li>
+<li class="fragment fade-up">Vertraulichkeit: Das System garantiert sicheren Zugriff</li>
+		<li class="fragment fade-up">Integrität: Die Informationen sind echt gesichert.</li>
+		<li class="fragment fade-up">Transparenz: Sammeln der Daten soll
+        nachvollzogen, überprüft und bewertet werden können.</li>
+		<li class="fragment fade-up">Nichtverkettbarkeit: Daten werden so getrennt wie möglich gehalten</li>
+		<li class="fragment fade-up">Intervenierbarkeit: Eine Person kann von ihren Rechten gebrauch machen.</li>
+
+
+						</ul>
+					</section>
+
+					<section data-markdown>
+						### E-Ticketsysteme
+						* Stammdatenerhebung nötig? &rarr; freiwillige Angabe empfohlen
+						* **Nichtverkettbarkeit garantieren:** Stamm- und Zahlungsdaten, Fahrverhalten
+						* **Transparenz schaffen:** Daten für Fahrgast einseh- und löschbar machen
+						* **Empfehlung für Fahrgast:** Aufladung nur Bar
+						  &rarr; keine Zuordnung von Zahlungsmitteln
+					</section>
+
+					<section><!--Marvin -->
+						<h1>Alle Daten werden lokal gespeichert</h1>
+						<p class="fragment">Pro</p>
+							<ul>
+							  <li class="fragment fade-up">Informationen können offline abgerufen werden</li>
+							  <li class="fragment fade-up">Man müsste sich lokal einen Virus einfangen, damit Daten entwendet werden können</li>
+							</ul>
+							<p class="fragment">Kontra</p>
+							<ul>
+							  <li class="fragment fade-up">Da Daten offline gespeichert werden, kann es zu veralteten Datensätzen kommen</li>
+							  <li class="fragment fade-up">Vorallem ältere Smartphones/PCs können mit den Daten überfordert sein</li>
+							</ul>
+					</section>
+
+					<section><!--Marvin -->
+						<h1>Daten werden teileweise lokal gespeichert</h1>
+						<p class="fragment">Pro</p>
+							<ul>
+							  <li class="fragment fade-up">Daten immer up to date</li>
+							  <li class="fragment fade-up">Schneller wenn das Verkehrsnetz groß ist (vorallem bei älteren Smartphones)</li>
+							</ul>
+							<p class="fragment">Kontra</p>
+							<ul>
+							  <li class="fragment fade-up">Man muss dem Serverbetreiber vertrauen, dass er die Daten nicht speichert</li>
+							  <li class="fragment fade-up">Durch eine geknackte Verschlüsselung ist es trotzdem möglich an die Daten ranzukommen</li>
+								<li class="fragment fade-up">Anfällig für gesetzliche Backdoors (z.B. NSA)</li>
+							</ul>
+					</section>
+
+				</section>
+				<section>
+					<section>
+						<h2>Ausblick</h2>
+					</section>
+					<section>
+						<img  height="500" data-src="img/stop.jpg">
+						<aside class="notes">
+							<ul>
+								<li>ist vorstellbar dass in der Zukunft ÖPNV Halte nach Bedarf flexibel verteilt</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<img  height="500" data-src="img/priv_car.jpg">
+						<aside class="notes">
+							<ul>
+								<li>oder es in großstädten private RoboCabs gibt</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<img  height="500" data-src="img/schwarz.jpg">
+						<aside class="notes">
+							<ul>
+								<li>wenn alle E-Tickets als Eintritt in das Verkehrmittel haben, kann man nicht mehr schwarz Fahren :/</li>
+							</ul>
+						</aside>
+					</section>
+					<section>
+						<div class="keypoint"><strong>Daten</strong> die man nicht <strong>speichert</strong> kann man nicht verlieren</div>
+						<aside class="notes">
+							<ul>
+								<li>wenn alle E-Tickets als Eintritt in das Verkehrmittel haben, kann man nicht mehr schwarz Fahren :/</li>
+							</ul>
+						</aside>
+					</section>
+				</section>
+				<section>
+					<img  height="500" data-src="img/klatschen.jpg">
+				</section>
+				<section>
+					<h1>Fragen?</h1>
+				</section>
+				<section>
+					<section>
+						<h2>PrDidAE - Ein Rückblick</h2>
+					</section>
+					<!-- OK -->
+					<section data-background="#FFFF00">
+						<img class="plain" height="500" data-src="img/thumb_up.png" style="transform: rotate(90deg); -webkit-transform: rotate(90deg);">
+					</section>
+					<section data-background="#FFFF00">
+						<div class="keypoint">erster Kontakt mit wissenschaftlichem Arbeiten</div>
+						<aside class="notes">
+							<ul>
+								<li>jeder konnte sich mit Papern auseinandersetzen</li>
+								<li>alle haben jetzt eine gültige Latex Vorlage</li>
+							</ul>
+						</aside>
+					</section>
+					<section data-background="#FFFF00">
+						<div class="keypoint">jede Woche Aufgaben</div>
+						<aside class="notes">
+							<ul>
+								<li>man konnte das Seminar nie ganz vernachlässigen</li>
+								<li>zum Teil war Ziel nicht erkennbar</li>
+							</ul>
+						</aside>
+					</section>
+
+
+					<!-- Bad -->
+					<section data-background="#8B0000">
+						<img class="plain" height="500" data-src="img/thumb_up.png" style="transform: rotate(180deg); -webkit-transform: rotate(180deg);">
+					</section>
+					<section data-background="#8B0000">
+						<div class="keypoint">keine Auswertung von Wochenaufgaben</div>
+					</section>
+					<section data-background="#8B0000">
+						<div class="keypoint">kein Feedback im Prozess</div>
+					</section>
+
+
+
+					<!-- Good -->
+					<section data-background="#008000">
+						<img class="plain" height="500" data-src="img/thumb_up.png">
+					</section>
+					<section data-background="#008000">
+						<div class="keypoint">jeder war aktiv eingespannt</div>
+					</section>
+					<section data-background="#008000">
+						<div class="keypoint">konstruktive Gruppenarbeit</div>
+						<aside class="notes">
+							<ul>
+								<li>war produktiver als alleine</li>
+								<li>wirkte arbeitsfördernd</li>
+								<li>war gut Ideen in der Gruppe zu besprechen</li>
+							</ul>
+						</aside>
+					</section>
+					<section data-background="#008000">
+						<div class="keypoint">Methoden</div>
+						<aside class="notes">
+							<ul>
+								<li>viele sinvolle Methoden</li>
+								<li>schaffen Grundlage für weitere wissenschaftliche Arbeit</li>
+								<li>für viele verschiedene Einsatzzwecke eine Methode vorhanden</li>
+							</ul>
+						</aside>
+					</section>
+					<section data-background="#008000">
+						<div class="keypoint">gute Gruppendynamik</div>
+						<aside class="notes">
+							<ul>
+								<li>jeder konnte sich mit seinen Stärken einbringen</li>
+								<li>keiner hat sich verweigert oder hatte keine Lust mehr</li>
+								<li>jeder konnte etwas von anderen lernen</li>
+							</ul>
+						</aside>
+					</section>
+					<section data-background="#008000">
+						<div class="keypoint">Zeitmanagement</div>
+						<aside class="notes">
+							<ul>
+								<li>einige haben zum ersten Mal nicht alles einen Tag vor der Abgabe gemacht</li>
+							</ul>
+						</aside>
+					</section>
+					<section data-background="#008000">
+						<div class="keypoint">selbstständiges Arbeiten</div>
+						<aside class="notes">
+							<ul>
+								<li>als Gruppe konnten wir uns ganz frei im Thema orientieren und Frau BP hat Hilfestellung gegeben</li>
+								<li>Frau BP hat aber nicht eingegriffen</li>
+							</ul>
+						</aside>
+					</section>
+
+				</section>
+				<section data-background="#000000">
+					<div class="keypoint">Fin</div>
+				</section>
+
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
