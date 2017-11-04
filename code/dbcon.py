@@ -80,6 +80,42 @@ class Dbcon:
             print("An error occurred: ", e.args[0])
             self.rollback_sql_query()
 
+    def execute_sql_query_manipulation_many(self, sQuery, aValues):
+        """ use this to insert many rows at one statement
+            sQuery = "INSERT INTO stocks VALUES (?,?,?,?,?)"
+            aValues = [('2017-01-05','BUY','RHAT',100,35.14),
+                       ('2018-02-12','SELL','RHAT',100,45.69)]
+         """
+        if not self.con:
+            raise Exception(
+                "You have to establish a connection to a database before you can execute sql queries.")
+        if not l3.complete_statement(sQuery):
+            raise Exception(
+                "The sql query %s is no valide sql statement" % sQuery)
+        try:
+            self.cur.executemany(sQuery, aValues)
+            self.con.commit()
+        except l3.Error as e:
+            print("An error occurred: ", e.args[0])
+            self.rollback_sql_query()
+
+    def execute_sql_query_manipulation_script(self, sQuery):
+        """ use this to execute multiline SQL statements
+            like creating a db
+         """
+        if not self.con:
+            raise Exception(
+                "You have to establish a connection to a database before you can execute sql queries.")
+        if not l3.complete_statement(sQuery):
+            raise Exception(
+                "The sql query %s is no valide sql statement" % sQuery)
+        try:
+            self.cur.executescript(sQuery)
+            self.con.commit()
+        except l3.Error as e:
+            print("An error occurred: ", e.args[0])
+            self.rollback_sql_query()
+
     def execute_sql_query_select(self, sQuery, tpValues=None):
         """except of giving:
             sQuery = "SELECT * FROM A WHERE id=5"
