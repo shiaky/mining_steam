@@ -172,9 +172,6 @@
                 <h2>Possible targets and outcomes</h2>
             </section>
             <!--
-
-            - play time prediction based on earlier game time
-
             - money spent based on games played (ground truth ~> steam calculator)
             Von gekauften Spielen Schlussfolgern welche Spiele der User noch besitzt/gekauft hat/spielt :)
             -->
@@ -202,26 +199,78 @@
                 </aside>
             </section>
             <section>
-                <h3><!-- TODO Add ideas--></h3>
+                <h3>Predict future play time</h3>
 
                 <h2>Pros</h2>
                 <ul>
-                    <li></li>
+                    <li>Prediction algorithms rock!</li>
+                    <li>Very valuable information</li>
                 </ul>
                 <h2>Cons</h2>
                 <ul>
-                    <li></li>
+                    <li>Can be quite complex, depending on the scope</li>
+                    <li>Needs a lot of data for a good prediction</li>
+                    <li>Requires time to track the playtimes of a lot of players</li>
+                    <li>Unforeseeable events can't be considered</li>
                 </ul>
 
                 <aside class="notes">
                     <ul>
-                        <li></li>
+                        <li>Hard to accomplish in the end</li>
+                        <li>Likely not what we want to do, just our starting idea</li>
                     </ul>
                 </aside>
+            </section>
+            <section>
+                <h3>Relation between most-liked genre and amount of money spent</h3>
+
+                <h2>Pros</h2>
+                <ul>
+                    <li>Ground truth is available (steam calculator)</li>
+                    <li>Gathering needed data doesn't look too complex</li>
+                </ul>
+                <h2>Cons</h2>
+                <ul>
+                    <li>Not all money spent can be tracked</li>
+                    <li>Is there a correlation?</li>
+                </ul>
+
+                <aside class="notes">
+                    <ul>
+                        <li>Steam Calculator for ground truth</li>
+                        <li>In-App purchases can't be tracked</li>
+                    </ul>
+                </aside>
+            </section>
+            <section>
+                <h3>Deduce which games a user has based on current games</h3>
+
+                <h2>Pros</h2>
+                <ul>
+                    <li>Outcome can be used as "recommendation system"</li>
+                    <li>Data is accessible</li>
+                </ul>
+                <h2>Cons</h2>
+                <ul>
+                    <li>High sample size is required</li>
+                    <li>Maybe to easy</li>
+                </ul>
             </section>
         </section>
 
         <!-- What's next? -->
+        <section>
+            <section>
+                <h2>What's next?</h2>
+                <ol>
+                    <li>Decide which idea to pursue</li>
+                    <li>Get some constructive feedback</li>
+                    <li>Infere some stuff</li>
+                    <li>???</li>
+                    <li>PROFIT</li>
+                </ol>
+            </section>
+        </section>
 
         <!-- Feedback -->
         <section>
