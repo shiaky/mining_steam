@@ -9,6 +9,7 @@
 .idea/dictionaries
 __pycache__/
 *.db
+*.*~
 
 # Sensitive or high-churn files:
 .idea/**/dataSources/
