@@ -15,7 +15,7 @@ ownedgames = pd.read_sql_query("SELECT * FROM ownedgames;", conn)
 #games_genres = pd.read_sql_query("SELECT * FROM games_genres;", conn)
 # games_achievements = pd.read_sql_query(
 #    "SELECT * FROM games_achievements;", conn)
-#games = pd.read_sql_query("SELECT * FROM games;", conn)
+games = pd.read_sql_query("SELECT * FROM games;", conn)
 friends = pd.read_sql_query("SELECT * FROM friends;", conn)
 
 
@@ -51,6 +51,11 @@ print("\nplaytime forever:\n %s" % str(playtime_forever))
 # playtime 2 Weeks
 playtime_2weeks = ownedgames[["Playtime2Weeks"]].describe()
 print("\nplaytime 2 Weeks:\n %s" % str(playtime_2weeks))
+
+
+# real name
+real_name = players[players.RealName.notnull()]["RealName"].count()
+print("\nplayers with real name: %i" % real_name)
 
 # train_df[['Pclass', 'Survived']].groupby(['Pclass'], as_index=False).mean().sort_values(by='Survived', ascending=False)
 
