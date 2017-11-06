@@ -2,8 +2,12 @@
 from SteamCrawler import Player, Game, SteamCrawler
 from SteamDbStore import SteamDbStore
 import datetime
+import json
 
-apiKey = ""
+with open("config.json", "r") as json_file:
+        config = json.load(json_file)
+
+apiKey = config["token"]
 crawler = SteamCrawler(apiKey)
 playersToCrawl = 4000  # takes around 2 hours with crawlingPlayerAchievements enabled
 # one api call per game a player owns -> ~ 5-100 api calls per player
