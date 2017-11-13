@@ -1,9 +1,8 @@
-#!/usr/bin/env python
-import urllib3
-import json
+import urllib3, json
 from random import randint
-import time
+from threading import Thread, Lock
 
+import time
 
 class Player(object):
     def __init__(self):
@@ -21,7 +20,9 @@ class Player(object):
         self.DaysSinceLastBan = 0
         self.Friends = []
         self.OwnedGames = []
-
+        self.crawlFriends = []
+        self.crawledFriends = []
+        self.crawled = False
 
 class OwnedGame(object):
     def __init__(self):
@@ -29,7 +30,6 @@ class OwnedGame(object):
         self.PlaytimeForever = 0
         self.Playtime2Weeks = 0
         self.Achievements = {}
-
 
 class Game(object):
     def __init__(self):
@@ -39,7 +39,6 @@ class Game(object):
         self.Achievements = {}
         self.IsFree = None
         self.Genres = None
-
 
 class SteamCrawler(object):
     def __init__(self, apiKey):
@@ -51,6 +50,9 @@ class SteamCrawler(object):
         self.playerIds = []
         self.Games = {}
         self.Players = {}
+        self.CrawledPlayers = set()
+        self.CrawledGames = set()
+        self.gamesToCrawl = []
         self.apiCalls = 0
         self.specialApiCalls = 0
         self.specialApiTime = int(time.time())
@@ -58,9 +60,17 @@ class SteamCrawler(object):
         self.apiRateLimit = 100000 - 5
         self.specialApiRateLimit = 200 - 5
         self.GamesToSkip = {}
+        self.finishedGames = {}
         self.crawlPlayerAchievements = None
+        self.apiCallLock = Lock()
+        self.gameListLock = Lock()
+        self.continueToCrawlGamesLock = Lock()
+        self.stopGameThread = False
+        self.gameThreadStopped = False
+        self.gameThread = None
 
     def __executeApiCall(self, call, specialApi=False):
+        self.apiCallLock.acquire()
         self.apiCalls += 1
         if self.apiCalls == self.apiRateLimit:
             print("Maximum calls per day reached, discarding all following calls")
@@ -75,20 +85,21 @@ class SteamCrawler(object):
                 timeDelta = int(time.time()) - self.specialApiTime
                 if timeDelta <= (60 * 5):
                     sleepTime = (60 * 5) - timeDelta
-                    print("Special Api Rate Limit exceeded, sleeping for " +
-                          str(sleepTime) + " seconds.")
+                    self.apiCallLock.release()
+                    print("Special Api Rate Limit exceeded, second thread sleeping for " + str(sleepTime) + " seconds (first thread continues crawling)")
                     time.sleep(sleepTime)
+                    self.apiCallLock.acquire()
                     self.specialApiTime = int(time.time())
                     self.specialApiCalls = 0
 
         r = self.http.request('GET', call)
         resultString = r.data.decode("utf-8")
         result = json.loads(resultString)
+        self.apiCallLock.release()
         return result, r.status
 
     def __getPlayerSummaries(self, *playerIds):
-        getPlayerSummariesCall = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" + \
-            self.apiKey + "&steamids="
+        getPlayerSummariesCall = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" + self.apiKey + "&steamids="
         playersParam = ""
         for playerId in playerIds:
             playersParam += str(playerId) + ","
@@ -101,8 +112,7 @@ class SteamCrawler(object):
             return None
 
     def __getPlayerBans(self, *playerIds):
-        getPlayerBansCall = "http://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=" + \
-            self.apiKey + "&steamids="
+        getPlayerBansCall = "http://api.steampowered.com/ISteamUser/GetPlayerBans/v1/?key=" + self.apiKey + "&steamids="
         playersParam = ""
         for playerId in playerIds:
             playersParam += str(playerId) + ","
@@ -128,19 +138,17 @@ class SteamCrawler(object):
             return None
         getPlayerAchievementsForGameCall = "http://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v0001/?appid=" + str(
             gameId) + "&key=" + self.apiKey + "&steamid=" + str(playerId)
-        result, status = self.__executeApiCall(
-            getPlayerAchievementsForGameCall)
+        result, status = self.__executeApiCall(getPlayerAchievementsForGameCall)
         if status == 200:
             return result
         else:
             if "playerstats" in result and "error" in result["playerstats"] and result["playerstats"][
-                    "error"] == "Requested app has no stats":
+                "error"] == "Requested app has no stats":
                 self.GamesToSkip.update({gameId: True})
             return None
 
     def __getOwnedGames(self, playerId):
-        getOwnedGamesCall = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + \
-            self.apiKey + "&steamid=" + str(playerId) + "&format=json"
+        getOwnedGamesCall = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" + self.apiKey + "&steamid=" + str(playerId) + "&format=json"
         result, status = self.__executeApiCall(getOwnedGamesCall)
         if status == 200:
             return result
@@ -148,8 +156,7 @@ class SteamCrawler(object):
             return None
 
     def __getGameDetails(self, appId):
-        getGameDetailsCall = "http://store.steampowered.com/api/appdetails?appids=" + \
-            str(appId)
+        getGameDetailsCall = "http://store.steampowered.com/api/appdetails?appids=" + str(appId)
         result, status = self.__executeApiCall(getGameDetailsCall, True)
         if status == 200:
             return result
@@ -157,13 +164,19 @@ class SteamCrawler(object):
             return None
 
     def __getGameAchievements(self, gamedId):
-        getGameAchievementsCall = "http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=" + \
-            str(gamedId) + "&format=json"
+        getGameAchievementsCall = "http://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=" + str(gamedId) + "&format=json"
         result, status = self.__executeApiCall(getGameAchievementsCall)
         if status == 200:
             return result
         else:
             return None
+
+    def __produceGame(self, gameId):
+        self.gameListLock.acquire()
+        self.CrawledGames.add(gameId)
+        self.gamesToCrawl.append(gameId)
+        self.__createGame(gameId)
+        self.gameListLock.release()
 
     def __createGame(self, gameId):
         game = Game()
@@ -172,31 +185,104 @@ class SteamCrawler(object):
         if (gameAchievements is not None and "achievementpercentages" in gameAchievements and "achievements" in gameAchievements["achievementpercentages"]):
             gameAchievements = gameAchievements["achievementpercentages"]["achievements"]
             for gameAchievement in gameAchievements:
-                game.Achievements.update(
-                    {gameAchievement["name"]: float(gameAchievement["percent"])})
+                game.Achievements.update({gameAchievement["name"]: float(gameAchievement["percent"])})
             if len(game.Achievements) > 0:
                 game.HasAchievements = True
-        elif (gameAchievements is None):
-            return
         self.Games.update({game.Id: game})
 
-    def CrawlSteam(self, numberOfPlayers, crawlPlayerAchievements):
+    def CrawlSteam(self, numberOfPlayers, crawlPlayerAchievements, startPlayer):
+        self.Players = {}
         self.crawlPlayerAchievements = crawlPlayerAchievements
         self.numberOfPlayers = numberOfPlayers
-        while len(self.playerIds) < self.numberOfPlayers:
-            id = randint(self.oldestAvailableSteamAccount,
-                         self.newestAvailableSteamAccount)
-            if not id in self.playerIds:
-                self.playerIds.append(id)
-        for i in range(0, len(self.playerIds), 100):
-            endIndex = (i + 100, len(self.playerIds)
-                        )[i + 100 > len(self.playerIds)]
-            playerSubList = self.playerIds[i:endIndex]
+        playersToCrawl = self.__getPlayersToCrawl(str(startPlayer), numberOfPlayers)
+        if self.gameThread is None or not self.gameThread.isAlive():
+            if self.gameThread is None:
+               self.gameThread = Thread(target=self.__getGameInfos)
+            self.gameThread.start()
+        for i in range(0, len(playersToCrawl), 100):
+            endIndex = (i + 100, len(playersToCrawl))[i + 100 > len(playersToCrawl)]
+            playerSubList = playersToCrawl[i:endIndex]
             self.__assemblePlayers(*playerSubList)
-        self.__getGameInfos()
-        return self.Players, self.Games
+        returnGames = None
+        self.gameListLock.acquire()
+        returnGames = dict(self.finishedGames)
+        self.finishedGames = {}
+        self.gameListLock.release()
+        return self.Players, returnGames
 
-    def __assemblePlayers(self, *playerIds):
+    def SetCrawledGames(self, *games):
+        for i in range(0, len(games)):
+            self.CrawledGames.add(games[i])
+
+    def SetCrawledPlayers(self, *players):
+        for i in range(0, len(players)):
+            self.CrawledPlayers.add(players[i])
+
+    def stopCrawling(self):
+        self.continueToCrawlGamesLock.acquire()
+        self.stopGameThread = True
+        self.continueToCrawlGamesLock.release()
+        if(self.gameThread.isAlive()):
+            self.gameThread.join()
+        self.stopGameThread = False
+        returnGames = dict(self.finishedGames)
+        self.finishedGames = {}
+        return returnGames
+
+    def Test(self):
+        self.__getPlayersToCrawl("76561198032096523", 10)
+    def __getPlayersToCrawl(self, startPlayerId, numberOfPlayers):
+        crawlChain = []
+        players = []
+        firstPlayer = Player()
+        firstPlayer.Id = startPlayerId
+        players.append(firstPlayer)
+        crawlChain.append(firstPlayer)
+        self.CrawledPlayers.add(firstPlayer.Id)
+        i = -1
+        while len(players) < numberOfPlayers:
+            i+=1
+            if i < 0:
+                raise IndexError("Not enough friends to crawl enough players. Choose another starting player.")
+            currentPlayer = crawlChain[i]
+            if not currentPlayer.crawled:
+                friendList = self.__getFriendList(currentPlayer.Id)
+                if (friendList is not None and "friendslist" in friendList and "friends" in friendList["friendslist"]):
+                    for friend in friendList["friendslist"]["friends"]:
+                        currentPlayer.Friends.append(friend["steamid"])
+                #currentPlayer.Friends = self.__getFriendsListTest(currentPlayer.Id)
+                currentPlayer.crawled = True
+                currentPlayer.crawlFriends = list(currentPlayer.Friends)
+            newPlayerId = None
+            while True:
+                newPlayerId = None
+                if len(currentPlayer.crawlFriends) > 0:
+                    newPlayerId = currentPlayer.crawlFriends[randint(0, len(currentPlayer.crawlFriends) - 1)]
+                else:
+                    break
+                currentPlayer.crawlFriends.remove(newPlayerId)
+                if newPlayerId not in self.CrawledPlayers:
+                    break
+            if not newPlayerId is None:  #current player is not a leaf
+                self.CrawledPlayers.add(newPlayerId)
+                newPlayer = Player()
+                newPlayer.Id = newPlayerId
+                players.append(newPlayer)
+                crawlChain.append(newPlayer)
+            else:
+                i-=2
+                crawlChain.remove(currentPlayer)
+        return players
+
+
+
+
+
+
+    def __assemblePlayers(self, *players):
+        playerIds = []
+        for player in players:
+            playerIds.append(player.Id)
         playerInfos = self.__getPlayerSummaries(*playerIds)
         playerBans = self.__getPlayerBans(*playerIds)
         if "players" not in playerBans:
@@ -207,8 +293,13 @@ class SteamCrawler(object):
             localPlayers = {}
             for i in range(0, len(playerInfos)):
                 playerInfo = playerInfos[i]
-                player = Player()
-                player.Id = playerInfo["steamid"]
+                playerId = playerInfo["steamid"]
+                player = None
+                for localPlayer in players:
+                    if localPlayer.Id == playerId:
+                        player = localPlayer
+                        break
+
                 if "personaname" in playerInfo:
                     player.SteamName = playerInfo["personaname"]
                 if "lastlogoff" in playerInfo:
@@ -241,13 +332,6 @@ class SteamCrawler(object):
                         break
                 if ban is not None:
                     playerBans.remove(ban)
-
-                friendList = self.__getFriendList(player.Id)
-                if (friendList is not None and "friendslist" in friendList and "friends" in friendList["friendslist"]):
-                    for friend in friendList["friendslist"]["friends"]:
-                        player.Friends.append(friend["steamid"])
-                elif friendList is None:
-                    continue
                 playerGames = self.__getOwnedGames(player.Id)
                 if (playerGames is not None and "response" in playerGames and "games" in playerGames["response"]):
                     playerGames = playerGames["response"]["games"]
@@ -258,40 +342,66 @@ class SteamCrawler(object):
                         if "playtime_2weeks" in playerGame:
                             ownedGame.Playtime2Weeks = playerGame["playtime_2weeks"]
                         if self.crawlPlayerAchievements:
-                            playerAchievementsForGame = self.__getPlayerAchievementsForGame(
-                                player.Id, ownedGame.Id)
+                            playerAchievementsForGame = self.__getPlayerAchievementsForGame(player.Id, ownedGame.Id)
                             if (playerAchievementsForGame is not None and "playerstats" in playerAchievementsForGame and "achievements" in playerAchievementsForGame["playerstats"]):
                                 playerAchievementsForGame = playerAchievementsForGame["playerstats"]
                                 achievements = playerAchievementsForGame["achievements"]
                                 for achievement in achievements:
                                     if achievement["achieved"] == 1:
-                                        ownedGame.Achievements.update(
-                                            {achievement["apiname"]: achievement["unlocktime"]})
+                                        ownedGame.Achievements.update({achievement["apiname"]: achievement["unlocktime"]})
                         player.OwnedGames.append(ownedGame)
-                        if not ownedGame.Id in self.Games:
-                            self.__createGame(ownedGame.Id)
+                        if not ownedGame.Id in self.CrawledGames:
+                            self.__produceGame(ownedGame.Id)
                 elif playerGames is None:
                     continue
                 self.Players.update({player.Id: player})
 
+    def __shouldContinueToCrawlGames(self):
+        result = True
+        self.continueToCrawlGamesLock.acquire()
+        if self.stopGameThread:
+            result = False
+        self.continueToCrawlGamesLock.release()
+        return result
+
+
     def __getGameInfos(self):
-        for gameId in self.Games.keys():
-            gameInfo = self.__getGameDetails(gameId)
-            if not gameInfo is None and str(gameId) in gameInfo and "data" in gameInfo[str(gameId)]:
-                gameInfo = gameInfo[str(gameId)]["data"]
-                if gameInfo is not None:
-                    name = ""
-                    isFree = None
-                    genres = []
-                    if "name" in gameInfo:
-                        name = gameInfo["name"]
-                    if "is_free" in gameInfo:
-                        isFree = gameInfo["is_free"]
-                    if "genres" in gameInfo:
-                        genresList = gameInfo["genres"]
-                        for i in range(0, len(genresList)):
-                            if "description" in genresList[i]:
-                                genres.append(genresList[i]["description"])
-                    self.Games.get(gameId).Name = name
-                    self.Games.get(gameId).IsFree = isFree
-                    self.Games.get(gameId).Genres = genres
+        while self.__shouldContinueToCrawlGames() or len(self.gamesToCrawl) > 0:
+            localGamesToCrawl = None
+            while True:
+                self.gameListLock.acquire()
+                if len(self.gamesToCrawl) > 0 or not self.__shouldContinueToCrawlGames():
+                    localGamesToCrawl = list(self.gamesToCrawl)
+                    self.gamesToCrawl = []
+                    self.gameListLock.release()
+                    break
+                else:
+                    self.gameListLock.release()
+                    time.sleep(10)
+
+            for i in range(0, len(localGamesToCrawl)):
+                gameId = localGamesToCrawl[i]
+                gameInfo = self.__getGameDetails(gameId)
+                if not gameInfo is None and str(gameId) in gameInfo and "data" in gameInfo[str(gameId)]:
+                    gameInfo = gameInfo[str(gameId)]["data"]
+                    if gameInfo is not None:
+                        name = ""
+                        isFree = None
+                        genres = []
+                        if "name" in gameInfo:
+                            name = gameInfo["name"]
+                        if "is_free" in gameInfo:
+                            isFree = gameInfo["is_free"]
+                        if "genres" in gameInfo:
+                            genresList = gameInfo["genres"]
+                            for i in range(0, len(genresList)):
+                                if "description" in genresList[i]:
+                                    genres.append(genresList[i]["description"])
+                        self.gameListLock.acquire()
+                        self.Games.get(gameId).Name = name
+                        self.Games.get(gameId).IsFree = isFree
+                        self.Games.get(gameId).Genres = genres
+                        self.gameListLock.release()
+                self.gameListLock.acquire()
+                self.finishedGames.update({gameId: self.Games.get(gameId)})
+                self.gameListLock.release()
