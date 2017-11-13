@@ -229,8 +229,6 @@ class SteamCrawler(object):
         self.finishedGames = {}
         return returnGames
 
-    def Test(self):
-        self.__getPlayersToCrawl("76561198032096523", 10)
     def __getPlayersToCrawl(self, startPlayerId, numberOfPlayers):
         crawlChain = []
         players = []
@@ -243,7 +241,7 @@ class SteamCrawler(object):
         while len(players) < numberOfPlayers:
             i+=1
             if i < 0:
-                raise IndexError("Not enough friends to crawl enough players. Choose another starting player.")
+                break
             currentPlayer = crawlChain[i]
             if not currentPlayer.crawled:
                 friendList = self.__getFriendList(currentPlayer.Id)
