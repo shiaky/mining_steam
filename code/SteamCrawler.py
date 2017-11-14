@@ -232,22 +232,30 @@ class SteamCrawler(object):
     def __getPlayersToCrawl(self, startPlayerId, numberOfPlayers):
         crawlChain = []
         players = []
+        playerFriends = set()
         firstPlayer = Player()
         firstPlayer.Id = startPlayerId
-        players.append(firstPlayer)
+        if not firstPlayer.Id in self.CrawledPlayers:
+            self.CrawledPlayers.add(firstPlayer.Id)
+            players.append(firstPlayer)
         crawlChain.append(firstPlayer)
-        self.CrawledPlayers.add(firstPlayer.Id)
         i = -1
-        while len(players) < numberOfPlayers:
+        while len(players) + len(playerFriends) < numberOfPlayers:
             i+=1
             if i < 0:
                 break
+
             currentPlayer = crawlChain[i]
             if not currentPlayer.crawled:
                 friendList = self.__getFriendList(currentPlayer.Id)
                 if (friendList is not None and "friendslist" in friendList and "friends" in friendList["friendslist"]):
                     for friend in friendList["friendslist"]["friends"]:
-                        currentPlayer.Friends.append(friend["steamid"])
+                        friendId = friend["steamid"]
+                        currentPlayer.Friends.append(friendId)
+                        if friendId not in self.CrawledPlayers:
+                            friendPlayer = Player()
+                            friendPlayer.Id = friendId
+                            playerFriends.add(friendPlayer)
                 #currentPlayer.Friends = self.__getFriendsListTest(currentPlayer.Id)
                 currentPlayer.crawled = True
                 currentPlayer.crawlFriends = list(currentPlayer.Friends)
@@ -270,6 +278,9 @@ class SteamCrawler(object):
             else:
                 i-=2
                 crawlChain.remove(currentPlayer)
+        for playerFriend in playerFriends:
+            if playerFriend.Id not in self.CrawledPlayers:
+                players.append(playerFriend)
         return players
 
 
@@ -316,6 +327,12 @@ class SteamCrawler(object):
                     player.State = playerInfo["locstatecode"]
                 if "loccityid" in playerInfo:
                     player.City = playerInfo["loccityid"]
+                if not player.crawled:
+                    friendList = self.__getFriendList(player.Id)
+                    if (friendList is not None and "friendslist" in friendList and "friends" in friendList["friendslist"]):
+                        for friend in friendList["friendslist"]["friends"]:
+                            friendId = friend["steamid"]
+                            player.Friends.append(friendId)
                 ban = None
                 for k in range(0, len(playerBans)):
                     if "SteamId" in playerBans[k] and playerBans[k]["SteamId"] == player.Id:
