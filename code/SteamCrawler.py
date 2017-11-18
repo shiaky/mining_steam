@@ -74,12 +74,20 @@ class SteamCrawler(object):
         self.stopGameThread = False
         self.gameThreadStopped = False
         self.gameThread = None
+        self.creationTime = int(time.time())
 
     def __executeApiCall(self, call, specialApi=False):
         self.apiCallLock.acquire()
         self.apiCalls += 1
         if self.apiCalls == self.apiRateLimit:
-            print("Maximum calls per day reached, discarding all following calls")
+            now = int(time.time())
+            timeDelta = now - self.creationTime
+            sleepTime = (60*60*24) - timeDelta
+            if sleepTime > 0:
+                print("Maximum calls per day reached, sleeping for " + sleepTime + " seconds.")
+                time.sleep(sleepTime)
+                self.apiCalls = 0
+                self.creationTime = int(time.time())
         if self.apiCalls >= self.apiRateLimit:
             return None, 666
         if specialApi:
