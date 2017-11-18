@@ -141,3 +141,11 @@ class SteamDbStore:
                         (lOwnedGameId, sAchievement, lTimestamp))
                 self.db.execute_sql_query_manipulation_many(
                     "INSERT INTO ownedgames_achievements (ownedgame_Id, Achievement, Timestamp) VALUES (?, ?, ?);", aAchievements)
+
+    def get_player_ids(self):
+        aPlayers = self.db.execute_sql_query_select("SELECT Id FROM players;")
+        return [lPlayerId[0] for lPlayerId in aPlayers]
+
+    def get_game_ids(self):
+        aGames = self.db.execute_sql_query_select("SELECT Id FROM games;")
+        return [lGameId[0] for lGameId in aGames]
