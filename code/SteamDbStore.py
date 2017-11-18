@@ -99,14 +99,18 @@ class SteamDbStore:
                     aGenreId = self.db.execute_sql_query_select(
                         "SELECT Id FROM genres WHERE Name = ?;", (sGenre,))
                     lGenreId = None
+                    bNewGenre = False
                     if aGenreId:
                         lGenreId = aGenreId[0][0]  # list of tuples
                     else:
                         # insert genre and get the auto generated id
                         lGenreId = self.db.execute_sql_query_manipulation(
                             "INSERT INTO genres (Name) VALUES (?);", (sGenre,))
-                    self.db.execute_sql_query_manipulation(
-                        "INSERT INTO games_genres (game_Id, genre_Id) VALUES (?,?);", (lId, lGenreId))
+                        bNewGenre = True
+                    # check whether game genre relationship war already saved
+                    if bNewGenre or not self.db.execute_sql_query_select("SELECT null FROM games_genres WHERE game_Id = ? AND genre_Id = ?;", (lId, lGenreId)):
+                        self.db.execute_sql_query_manipulation(
+                            "INSERT INTO games_genres (game_Id, genre_Id) VALUES (?,?);", (lId, lGenreId))
 
     def insert_players(self, dicPlayers):
         for lId, oPlayer in dicPlayers.items():
