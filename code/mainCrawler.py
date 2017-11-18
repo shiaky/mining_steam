@@ -28,11 +28,25 @@ lStartPlayerId = 76561198063135040
 
 
 ##################################################
-sFail = '''
-▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-████▌▄▌▄▐▐▌█████
-████▌▄▌▄▐▐▌▀████
-▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+sPlay = '''
+      _=====_                               _=====_
+     / _____ \                             / _____ \
+   +.-'_____'-.---------------------------.-'_____'-.+
+  /   |     |  '.        S O N Y        .'  |  _  |   \
+ / ___| /|\ |___ \                     / ___| /_\ |___ \
+/ |      |      | ;  __           _   ; | _         _ | ;
+| | <---   ---> | | |__|         |_:> | ||_|       (_)| |
+| |___   |   ___| ;SELECT       START ; |___       ___| ;
+|\    | \|/ |    /  _     ___      _   \    | (X) |    /|
+| \   |_____|  .','" "', |___|  ,'" "', '.  |_____|  .' |
+|  '-.______.-' /       \ANALOG/       \  '-._____.-'   |
+|               |       |------|       |                |
+|              /\       /      \       /\               |
+|             /  '.___.'        '.___.'  \              |
+|            /                            \             |
+ \          /                              \           /
+  \________/                                \_________/
+                    PS2 CONTROLLER
 
 '''
 
@@ -78,7 +92,7 @@ print("Steam Crawler v 0.9\n=================")
 print("Target count of players: %i" % playersToCrawlTotal)
 print("Current count of players: %i\n\n" % lNumberOfPlayersCrawled)
 
-print(sFail)
+print(sPlay)
 
 while (lNumberOfPlayersCrawled < playersToCrawlTotal):
     print("DB has %i players, trying to get %i players in this round\nStartplayer: %i\n" %
