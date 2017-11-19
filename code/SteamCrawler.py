@@ -1,5 +1,6 @@
 import urllib3
 import json
+import numpy as np
 from random import randint
 from threading import Thread, Lock
 
@@ -218,6 +219,9 @@ class SteamCrawler(object):
             if len(game.Achievements) > 0:
                 game.HasAchievements = True
         self.Games.update({game.Id: game})
+
+    def GetRandomPlayerId(self):
+        return np.random.randint(self.oldestAvailableSteamAccount, self.newestAvailableSteamAccount + 1)
 
     def CrawlSteam(self, numberOfPlayers, crawlPlayerAchievements, startPlayer):
         self.Players = {}
