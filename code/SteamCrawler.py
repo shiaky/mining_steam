@@ -117,7 +117,11 @@ class SteamCrawler(object):
                 status = r.status
         result = None
         if not resultString == None:
-            result = json.loads(resultString)
+            try:
+                result = json.loads(resultString)
+            except:
+                print("Some error occurred parsing the game data JSON: %s\ncontinue with the next stuff in the queue...." %
+                      resultString)
         self.apiCallLock.release()
         return result, status
 
