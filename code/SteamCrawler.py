@@ -450,12 +450,15 @@ class SteamCrawler(object):
                             if "description" in genresList[i]:
                                 genres.append(genresList[i]["description"])
                     self.gameListLock.acquire()
+                    if not gameId in self.Games:
+                        self.__createGame(gameId)
                     self.Games.get(gameId).Name = name
                     self.Games.get(gameId).IsFree = isFree
                     self.Games.get(gameId).Genres = genres
                     self.gameListLock.release()
             self.gameListLock.acquire()
-            self.finishedGames.update({gameId: self.Games.get(gameId)})
+            if gameId in self.Games:
+                self.finishedGames.update({gameId: self.Games.get(gameId)})
             self.gameListLock.release()
 
     def CrawlSpecificGames(self, *gamesToCrawl):
@@ -465,5 +468,3 @@ class SteamCrawler(object):
         self.finishedGames = {}
         self.gameListLock.release()
         return returnDict
-
-
