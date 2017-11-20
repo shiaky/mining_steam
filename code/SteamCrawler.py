@@ -428,29 +428,42 @@ class SteamCrawler(object):
                     self.gameListLock.release()
                     time.sleep(10)
 
-            for i in range(0, len(localGamesToCrawl)):
-                gameId = localGamesToCrawl[i]
-                gameInfo = self.__getGameDetails(gameId)
-                if not gameInfo is None and str(gameId) in gameInfo and "data" in gameInfo[str(gameId)]:
-                    gameInfo = gameInfo[str(gameId)]["data"]
-                    if gameInfo is not None:
-                        name = ""
-                        isFree = None
-                        genres = []
-                        if "name" in gameInfo:
-                            name = gameInfo["name"]
-                        if "is_free" in gameInfo:
-                            isFree = gameInfo["is_free"]
-                        if "genres" in gameInfo:
-                            genresList = gameInfo["genres"]
-                            for i in range(0, len(genresList)):
-                                if "description" in genresList[i]:
-                                    genres.append(genresList[i]["description"])
-                        self.gameListLock.acquire()
-                        self.Games.get(gameId).Name = name
-                        self.Games.get(gameId).IsFree = isFree
-                        self.Games.get(gameId).Genres = genres
-                        self.gameListLock.release()
-                self.gameListLock.acquire()
-                self.finishedGames.update({gameId: self.Games.get(gameId)})
-                self.gameListLock.release()
+            self.__refineGames(*localGamesToCrawl)
+
+    def __refineGames(self, *gamesToCrawl):
+        for i in range(0, len(gamesToCrawl)):
+            gameId = gamesToCrawl[i]
+            gameInfo = self.__getGameDetails(gameId)
+            if not gameInfo is None and str(gameId) in gameInfo and "data" in gameInfo[str(gameId)]:
+                gameInfo = gameInfo[str(gameId)]["data"]
+                if gameInfo is not None:
+                    name = ""
+                    isFree = None
+                    genres = []
+                    if "name" in gameInfo:
+                        name = gameInfo["name"]
+                    if "is_free" in gameInfo:
+                        isFree = gameInfo["is_free"]
+                    if "genres" in gameInfo:
+                        genresList = gameInfo["genres"]
+                        for i in range(0, len(genresList)):
+                            if "description" in genresList[i]:
+                                genres.append(genresList[i]["description"])
+                    self.gameListLock.acquire()
+                    self.Games.get(gameId).Name = name
+                    self.Games.get(gameId).IsFree = isFree
+                    self.Games.get(gameId).Genres = genres
+                    self.gameListLock.release()
+            self.gameListLock.acquire()
+            self.finishedGames.update({gameId: self.Games.get(gameId)})
+            self.gameListLock.release()
+
+    def CrawlSpecificGames(self, *gamesToCrawl):
+        self.__refineGames(*gamesToCrawl)
+        self.gameListLock.acquire()
+        returnDict = dict(self.finishedGames)
+        self.finishedGames = {}
+        self.gameListLock.release()
+        return returnDict
+
+
