@@ -153,3 +153,8 @@ class SteamDbStore:
     def get_game_ids(self):
         aGames = self.db.execute_sql_query_select("SELECT Id FROM games;")
         return [lGameId[0] for lGameId in aGames]
+
+    def get_missing_games(self):
+        aMissingGames = self.db.execute_sql_query_select(
+            "SELECT DISTINCT game_Id from ownedgames WHERE game_id NOT IN(SELECT DISTINCT Id FROM games);")
+        return [lGameId[0] for lGameId in aMissingGames]
