@@ -85,7 +85,7 @@ class SteamCrawler(object):
             sleepTime = (60 * 60 * 24) - timeDelta
             if sleepTime > 0:
                 print("Maximum calls per day reached, sleeping for " +
-                      sleepTime + " seconds.")
+                      str(sleepTime) + " seconds.")
                 time.sleep(sleepTime)
                 self.apiCalls = 0
                 self.creationTime = int(time.time())
