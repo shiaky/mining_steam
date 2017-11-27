@@ -112,7 +112,10 @@ class SteamCrawler(object):
         resultString = None
         status = 666
         if not r == None:
-            resultString = r.data.decode("utf-8")
+            try:
+                resultString = r.data.decode("utf-8")
+            except:
+                resultString = None
             if not r.status == None:
                 status = r.status
         result = None
