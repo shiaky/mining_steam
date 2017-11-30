@@ -417,6 +417,28 @@ class SteamCrawler(object):
         self.continueToCrawlGamesLock.release()
         return result
 
+    def CrawlAchievements(self, playerId, playerGames, games = None):
+        if games == None:
+            games = []
+        else:
+            games = list(games)
+        playerGames = list(playerGames)
+        achievementsResults = {}
+        for playerGame in playerGames:
+            personalAchievements = []
+            if len(games) == 0 or playerGame in games:
+                playerAchievementsForGame = self.__getPlayerAchievementsForGame(playerId, playerGame)
+                if (playerAchievementsForGame is not None and "playerstats" in playerAchievementsForGame and "achievements" in
+                    playerAchievementsForGame["playerstats"]):
+                    playerAchievementsForGame = playerAchievementsForGame["playerstats"]
+                    achievements = playerAchievementsForGame["achievements"]
+                    for achievement in achievements:
+                        if achievement["achieved"] == 1:
+                            personalAchievements.append((achievement["apiname"], achievement["unlocktime"]))
+            if len(personalAchievements) > 0:
+                achievementsResults.update({playerGame: personalAchievements})
+        return achievementsResults
+
     def __getGameInfos(self):
         while self.__shouldContinueToCrawlGames() or len(self.gamesToCrawl) > 0:
             localGamesToCrawl = None
