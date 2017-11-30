@@ -33,3 +33,11 @@ Game:
   Achievements (Dictionary von {Achievement : Seltenheit des Achievements in Prozent})
   IsFree
   Genres (Liste)
+  
+  
+  
+### all seldem achievements
+  SELECT g.Id, g.Name, g.HasAchivements, g.IsFree, ga.Curiosity FROM games_achievements as ga INNER JOIN games as g ON g.Id = ga.game_Id WHERE ga.Curiosity > 100;
+  
+### get all games that are owned by more that 50000 players
+SELECT og.game_Id FROM ownedgames as og GROUP BY og.game_Id HAVING COUNT(og.player_Id) > 50000;
