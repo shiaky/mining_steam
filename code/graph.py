@@ -16,20 +16,25 @@ sDb = "../data_27-11-17.db"
 oDbCon = sqlite3.connect(sDb)
 
 # create datasets
-oPlayers = pd.read_sql_query("SELECT Id FROM players", oDbCon)
+#oPlayers = pd.read_sql_query("SELECT Id FROM players", oDbCon)
 oFriends = pd.read_sql_query(
     "SELECT player_Id1, player_Id2 FROM friends", oDbCon)
 oDbCon.close()
 
 
-aPlayers = oPlayers["Id"].head(1000).values
+#aPlayers = oPlayers["Id"].head(1000).values
+aPlayers = []
 aFriends = oFriends.head(10000).values
 
-# # debug
-# aPlayers = [9, 4, 1, 6, 4, 3, 2, 6]
-# aFriends = [(9, 1), (4, 9), (2, 6)]
+# fill players from connections
+# instead of getting it from db
+for lP1, lP2 in aFriends:
+    if lP1 not in aPlayers:
+        aPlayers.append(lP1)
+    if lP2 not in aPlayers:
+        aPlayers.append(lP2)
 
-# create D3 json
+    # create D3 json
 dicPlayers = {}
 for i in range(len(aPlayers)):
     dicPlayers[aPlayers[i]] = i
