@@ -41,3 +41,6 @@ Game:
   
 ### get all games that are owned by more that 50000 players
 SELECT og.game_Id FROM ownedgames as og GROUP BY og.game_Id HAVING COUNT(og.player_Id) > 50000;
+
+### snoop
+SELECT og.game_Id, COUNT(og.Id) as owned FROM ownedgames as og GROUP BY og.game_Id ORDER BY COUNT(og.Id) DESC LIMIT 5000;

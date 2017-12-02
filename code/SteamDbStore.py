@@ -158,3 +158,36 @@ class SteamDbStore:
         aMissingGames = self.db.execute_sql_query_select(
             "SELECT DISTINCT game_Id from ownedgames WHERE game_id NOT IN(SELECT DISTINCT Id FROM games);")
         return [lGameId[0] for lGameId in aMissingGames]
+
+    def get_players_without_achievements(self):
+        aPlayers = self.db.execute_sql_query_select(
+            "SELECT p.Id FROM players as p WHERE p.Id not in (SELECT p.Id FROM players as p INNER JOIN ownedgames as og ON og.player_Id = p.Id INNER JOIN ownedgames_achievements as oa ON oa.ownedgame_Id = og.Id GROUP BY p.Id);")
+        return [lPlayerId[0] for lPlayerId in aPlayers]
+
+    def get_ownedgames_of_player(self, lPlayerId):
+        aGames = self.db.execute_sql_query_select(
+            "SELECT og.Id, og.game_Id FROM players as p INNER JOIN ownedgames as og ON og.player_Id = p.Id AND p.Id = ?;", (lPlayerId,))
+        dicResult = {}
+        for lOwnedGameId, lGameId in aGames:
+            dicResult[lGameId] = lOwnedGameId
+        return dicResult
+
+    def get_top_x_games(self, lTopLimit=1500):
+        aGames = self.db.execute_sql_query_select(
+            "SELECT og.game_Id as owned FROM ownedgames as og GROUP BY og.game_Id ORDER BY COUNT(og.Id) DESC LIMIT ?;", (lTopLimit,))
+        return [lGameId[0] for lGameId in aGames]
+
+    def insert_achievements_to_player(self, dicAchievementsByGame, dicPlayerOwnedgameRelations):
+        """dicAchievementsByGame has format
+           dict(gameId, list( tuple(achievement,time)))
+           dicPlayerOwnedgameRelations is a dic with gameId
+           as key and ownedgame_Id as value
+        """
+        for lGameId, aAchievements in dicAchievementsByGame.items():
+            lOwnedGameId = dicPlayerOwnedgameRelations[lGameId]
+            aAchievementsForDb = []
+            for sAchievement, lTimestamp in aAchievements:
+                aAchievementsForDb.append(
+                    (lOwnedGameId, sAchievement, lTimestamp))
+            self.db.execute_sql_query_manipulation_many(
+                "INSERT INTO ownedgames_achievements (ownedgame_Id, Achievement, Timestamp) VALUES (?, ?, ?);", aAchievementsForDb)
