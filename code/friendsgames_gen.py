@@ -14,7 +14,7 @@ with open("config.json", "r") as json_file:
 
 # --- config------
 sOutputFileName = "friendsgames.csv"
-lNumberOfPlayersToTest = 4000
+lNumberOfPlayersToTest = 15000
 lNumberOfThreads = 3
 # ----- END -----
 
