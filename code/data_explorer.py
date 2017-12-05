@@ -1,8 +1,8 @@
+import json
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import sqlite3
-import json
 
 # Import config
 with open("config.json", "r") as json_file:
@@ -26,6 +26,14 @@ total_count = df["Id"].count()
 # Create subframes
 dfg_gc = dfg.groupby("player_Id").size().reset_index(name="count")
 dff_gc = dff.groupby("player_Id1").size().reset_index(name="count")
+dff_gc_2 = dff.groupby("player_Id2").size().reset_index(name="other_count")
+
+dff_gc = dff_gc.merge(dff_gc_2, left_on='player_Id1', right_on='player_Id2')
+dff_gc["friendcount"] = dff_gc["count"] + dff_gc["other_count"]
+del dff_gc["player_Id2"]
+del dff_gc["count"]
+del dff_gc["other_count"]
+print(dff_gc.head())
 
 
 def of_total_count(number, precision=2):
@@ -66,10 +74,13 @@ print("{}% have 50 games or more".format(fifty_or_more_games_factor))
 
 # Friend count
 
-dff_gc["count"] = pd.cut(dff_gc["count"], [0, 1, 50, 100, 150, 200, 250, 300, 350, 400, 999999],
-                         labels=["0", "1 - 49", "50 - 99", "100 - 149", "150 - 199", "200 - 249", "250 - 299",
-                                 "300 - 349", "350 - 399", "400+"])
+dff_gc["friendcount"] = pd.cut(dff_gc[dff_gc["friendcount"] <= 50], [1, 50, 100, 150, 200, 250, 300, 350, 400, 999999],
+                               labels=["1 - 49", "50 - 99", "100 - 149", "150 - 199", "200 - 249", "250 - 299",
+                                       "300 - 349", "350 - 399", "400+"])
 
-axf = sns.countplot(x=dff_gc["count"])
+axf = sns.countplot(x=dff_gc["friendcount"])
 axf.set(xlabel="Friend count", ylabel="Number of players")
+for item in ([axf.title, axf.xaxis.label, axf.yaxis.label] +
+                 axf.get_xticklabels() + axf.get_yticklabels()):
+    item.set_fontsize(20)
 plt.show()
