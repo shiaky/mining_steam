@@ -174,7 +174,7 @@ class SteamDbStore:
 
     def get_top_x_games(self, lTopLimit=1500):
         aGames = self.db.execute_sql_query_select(
-            "SELECT og.game_Id as owned FROM ownedgames as og GROUP BY og.game_Id ORDER BY COUNT(og.Id) DESC LIMIT ?;", (lTopLimit,))
+            "SELECT  game_Id FROM ownedgames GROUP BY game_Id ORDER BY count(*) DESC LIMIT ?;", (lTopLimit,))
         return [lGameId[0] for lGameId in aGames]
 
     def insert_achievements_to_player(self, dicAchievementsByGame, dicPlayerOwnedgameRelations):
