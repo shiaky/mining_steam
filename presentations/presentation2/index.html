@@ -1,0 +1,478 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Mining Steam</title>
+
+    <meta name="description" content="Mining Steam">
+    <meta name="author" content="">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/tudd.css" id="theme">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.type = 'text/css'
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css'
+        document.getElementsByTagName('head')[0].appendChild(link)
+    </script>
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section class="titlepage">
+            <h1>(Still) Mining <s>Facebook</s> Steam</h1>
+            <h2>A look into our data</h2>
+            <img class="plain addmar" height="100" data-src="img/tu_logo_white.png" alt="TU Logo">
+
+            <p>
+                <small>Robin Herrmann,<br/>
+                    Alexander Thierfelder,<br/>
+                    Alexander Lichter
+                </small>
+            </p>
+            <p>
+                <small>WS 2017/18</small>
+            </p>
+        </section>
+
+        <section>
+            <h2>Agenda</h2>
+            <ul>
+                <li>Short recap</li>
+                <li>Our goal (and Plan B)</li>
+                <li>First look into our data</li>
+                <li>Selected features</li>
+                <li>What's next?</li>
+                <li>Feedback please!</li>
+            </ul>
+        </section>
+
+        <!-- Recap -->
+
+        <section>
+            <h2>Recap</h2>
+            <ul>
+                <li class="fragment">Public REST API</li>
+                <li class="fragment">100k requests a day</li>
+                <li class="fragment">Available data: Games, Players, Friendship-Relations, Achievements</li>
+            </ul>
+        </section>
+
+        <!-- Goal -->
+
+        <section>
+            <h2>The Goal</h2>
+
+            <p class="fragment">Infer the probability that a player owns a game based on the info about his friends</p>
+
+            <ul>
+                <li class="fragment">Play patterns</li>
+                <li class="fragment">Genres they like</li>
+                <li class="fragment">Connectivity</li>
+                <li class="fragment">Skill (based on achievements)</li>
+            </ul>
+
+            <h3 class="fragment">Plan B</h3>
+
+            <p class="fragment">Similar as our main goal, but with "genres"</p>
+        </section>
+
+        <!-- Look into data -->
+
+
+        <section>
+            <section>
+                <h2>First look into the data</h2>
+            </section>
+            <section>
+                <h2>General info</h2>
+            </section>
+
+            <section>
+                <h2>Friend count</h2>
+            </section>
+
+            <section>
+                <img src="img/friend_count_real.png">
+            </section>
+
+            <section>
+                <img src="img/friend_count_real_small.png">
+            </section>
+
+            <section>
+                <h2>Number of games</h2>
+            </section>
+
+            <section>
+                <img src="img/game_count.png">
+            </section>
+
+            <!-- ... -->
+        </section>
+
+        <!-- Features -->
+
+        <section>
+            <section>
+                <h2>Tested features</h2>
+            </section>
+            <section>
+                <h2>Feature 1</h2>
+                <h3>games in common with friends</h3>
+            </section>
+            <section>
+                % of games from player that at least one of the friends owns
+            </section>
+            <section>
+                <!------- generated table ------>
+                <style type="text/css">
+                .tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;}
+                .tg td{padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;}
+                .tg th{font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;}
+                .tg .tg-le8v{background-color:#c0c0c0;vertical-align:top}
+                .tg .tg-6afm{background-color:#c0c0c0;vertical-align:top}
+                .tg .tg-b7b8{background-color:#f9f9f9;vertical-align:top}
+                .tg .tg-yw4l{vertical-align:top}
+                </style>
+                <table class="tg">
+                <tr>
+                    <th class="tg-le8v"></th>
+                    <th class="tg-le8v">nr. friends</th>
+                    <th class="tg-le8v">nr. games</th>
+                    <th class="tg-le8v">% games common</th>
+                </tr>
+                <tr>
+                    <td class="tg-6afm">count</td>
+                    <td class="tg-b7b8">15000.000000</td>
+                    <td class="tg-b7b8">15000.000000</td>
+                    <td class="tg-b7b8">15000.000000</td>
+                </tr>
+                <tr>
+                    <td class="tg-le8v">mean</td>
+                    <td class="tg-yw4l">9.571333</td>
+                    <td class="tg-yw4l">41.471333</td>
+                    <td class="tg-yw4l">0.637514</td>
+                </tr>
+                <tr>
+                    <td class="tg-6afm">std</td>
+                    <td class="tg-b7b8">18.620649</td>
+                    <td class="tg-b7b8">80.923730</td>
+                    <td class="tg-b7b8">0.312005</td>
+                </tr>
+                <tr>
+                    <td class="tg-le8v">min</td>
+                    <td class="tg-yw4l">0.000000</td>
+                    <td class="tg-yw4l">1.000000</td>
+                    <td class="tg-yw4l">0.000000</td>
+                </tr>
+                <tr>
+                    <td class="tg-6afm">25%</td>
+                    <td class="tg-b7b8">2.000000</td>
+                    <td class="tg-b7b8">5.000000</td>
+                    <td class="tg-b7b8">0.400000</td>
+                </tr>
+                <tr>
+                    <td class="tg-le8v">50%</td>
+                    <td class="tg-yw4l">5.000000</td>
+                    <td class="tg-yw4l">16.000000</td>
+                    <td class="tg-yw4l">0.666667</td>
+                </tr>
+                <tr>
+                    <td class="tg-6afm">75%</td>
+                    <td class="tg-b7b8">10.000000</td>
+                    <td class="tg-b7b8">45.000000</td>
+                    <td class="tg-b7b8">0.944444</td>
+                </tr>
+                <tr>
+                    <td class="tg-le8v">max</td>
+                    <td class="tg-yw4l">471.000000</td>
+                    <td class="tg-yw4l">1302.000000</td>
+                    <td class="tg-yw4l">1.000000</td>
+                </tr>
+                </table>
+                <!------- END generated table ------>
+
+            </section>
+            <section>
+                <img src="img/analyse_img/friendsgames_1.png">
+            </section>
+            <section>
+                <img src="img/analyse_img/friendsgames_2.png">
+            </section>
+            <section>
+                <img src="img/analyse_img/friendsgames_3.png">
+            </section>
+            <section>
+                <img src="img/analyse_img/friendsgames_4.png">
+            </section>
+            <section>
+                <img src="img/analyse_img/friendsgames_5.png">
+            </section>
+
+            <section>
+                <h2>Feature 2</h2>
+            </section>
+
+             <section>
+                <h2>Feature 3</h2>
+            </section>
+
+             <section>
+                <h2>Feature 4</h2>
+            </section>
+
+             <section>
+                <h2>Feature 5</h2>
+                <h3>mean genre distribution distance</h3>
+            </section>
+
+            <section>
+                <h3>genre distribution</h3>
+                normalized vector of playtimes per genre for one player
+            </section>
+            <section>    
+                <h3>genre distribution distance</h3>
+                normalized euclidean distance of two genre distribution vectors [0,1]
+            </section>
+            <section>
+                <!-- ---include table here ----------- -->
+            <style type="text/css">
+            .tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;}
+            .tg td{padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;}
+            .tg th{font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;}
+            .tg .tg-le8v{background-color:#c0c0c0;vertical-align:top}
+            .tg .tg-6afm{background-color:#c0c0c0;vertical-align:top}
+            .tg .tg-b7b8{background-color:#f9f9f9;vertical-align:top}
+            .tg .tg-yw4l{vertical-align:top}
+            </style>
+            <table class="tg">
+            <tr>
+                <th class="tg-le8v"></th>
+                <th class="tg-le8v">mean genre distribution distance</th>
+                <th class="tg-le8v">Nr. friends</th>
+                <th class="tg-le8v">Nr. genres</th>
+            </tr>
+            <tr>
+                <td class="tg-6afm">count</td>
+                <td class="tg-b7b8">1907.000000</td>
+                <td class="tg-b7b8">1907.000000</td>
+                <td class="tg-b7b8">1907.000000</td>
+            </tr>
+            <tr>
+                <td class="tg-le8v">mean</td>
+                <td class="tg-yw4l">0.229450</td>
+                <td class="tg-yw4l">4.869953</td>
+                <td class="tg-yw4l">10.119560</td>
+            </tr>
+            <tr>
+                <td class="tg-6afm">std</td>
+                <td class="tg-b7b8">0.210196</td>
+                <td class="tg-b7b8">8.465650</td>
+                <td class="tg-b7b8">4.967087</td>
+            </tr>
+            <tr>
+                <td class="tg-le8v">min</td>
+                <td class="tg-yw4l">0.000000</td>
+                <td class="tg-yw4l">1.000000</td>
+                <td class="tg-yw4l">1.000000</td>
+            </tr>
+            <tr>
+                <td class="tg-6afm">25%</td>
+                <td class="tg-b7b8">0.067679</td>
+                <td class="tg-b7b8">1.000000</td>
+                <td class="tg-b7b8">6.000000</td>
+            </tr>
+            <tr>
+                <td class="tg-le8v">50%</td>
+                <td class="tg-yw4l">0.162160</td>
+                <td class="tg-yw4l">3.000000</td>
+                <td class="tg-yw4l">11.000000</td>
+            </tr>
+            <tr>
+                <td class="tg-6afm">75%</td>
+                <td class="tg-b7b8">0.336354</td>
+                <td class="tg-b7b8">5.000000</td>
+                <td class="tg-b7b8">14.000000</td>
+            </tr>
+            <tr>
+                <td class="tg-le8v">max</td>
+                <td class="tg-yw4l">1.000000</td>
+                <td class="tg-yw4l">133.000000</td>
+                <td class="tg-yw4l">23.000000</td>
+            </tr>
+            </table>
+            </section>
+            <section>
+                <img src="img/analyse_img/genredist_1.png">
+            </section>
+            <section>
+                <img src="img/analyse_img/genredist_2.png">
+            </section>
+            <section>
+                <img src="img/analyse_img/genredist_3.png">
+            </section>
+            <section>
+                <img src="img/analyse_img/genredist_4.png">
+            </section>
+            <section>
+                <img src="img/analyse_img/genredist_5.png">
+            </section>            
+
+             <section>
+                <h2>Feature 6</h2>
+                <h3>mean friends connectivity</h3>
+            </section>
+            <section>
+                mean rate of friends interconnection of player [0,1]
+            </section>
+            <section>
+                <!-- generated table -->
+                <style type="text/css">
+                .tg  {border-collapse:collapse;border-spacing:0;border-color:#ccc;}
+                .tg td{padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#fff;}
+                .tg th{font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:#ccc;color:#333;background-color:#f0f0f0;}
+                .tg .tg-le8v{background-color:#c0c0c0;vertical-align:top}
+                .tg .tg-6afm{background-color:#c0c0c0;vertical-align:top}
+                .tg .tg-b7b8{background-color:#f9f9f9;vertical-align:top}
+                .tg .tg-yw4l{vertical-align:top}
+                </style>
+                <table class="tg">
+                <tr>
+                    <th class="tg-le8v"></th>
+                    <th class="tg-le8v">mean connectivity</th>
+                    <th class="tg-le8v">max connectivity</th>
+                    <th class="tg-le8v">Nr. friends</th>
+                </tr>
+                <tr>
+                    <td class="tg-6afm">count</td>
+                    <td class="tg-b7b8">9341.000000</td>
+                    <td class="tg-b7b8">9341.000000 </td>
+                    <td class="tg-b7b8">9341.000000</td>
+                </tr>
+                <tr>
+                    <td class="tg-le8v">mean</td>
+                    <td class="tg-yw4l">0.178722</td>
+                    <td class="tg-yw4l">0.273485</td>
+                    <td class="tg-yw4l">6.854619</td>
+                </tr>
+                <tr>
+                    <td class="tg-6afm">std</td>
+                    <td class="tg-b7b8">0.217226</td>
+                    <td class="tg-b7b8">0.284279</td>
+                    <td class="tg-b7b8">11.360317</td>
+                </tr>
+                <tr>
+                    <td class="tg-le8v">min</td>
+                    <td class="tg-yw4l">0.000000</td>
+                    <td class="tg-yw4l">0.000000</td>
+                    <td class="tg-yw4l">2.000000</td>
+                </tr>
+                <tr>
+                    <td class="tg-6afm">25%</td>
+                    <td class="tg-b7b8">0.000000</td>
+                    <td class="tg-b7b8">0.000000</td>
+                    <td class="tg-b7b8">2.000000</td>
+                </tr>
+                <tr>
+                    <td class="tg-le8v">50%</td>
+                    <td class="tg-yw4l">0.078890</td>
+                    <td class="tg-yw4l">0.200000</td>
+                    <td class="tg-yw4l">4.000000</td>
+                </tr>
+                <tr>
+                    <td class="tg-6afm">75%</td>
+                    <td class="tg-b7b8">0.340000</td>
+                    <td class="tg-b7b8">0.500000</td>
+                    <td class="tg-b7b8">7.000000</td>
+                </tr>
+                <tr>
+                    <td class="tg-le8v">max</td>
+                    <td class="tg-yw4l">0.875000</td>
+                    <td class="tg-yw4l">0.978261</td>
+                    <td class="tg-yw4l">355.000000</td>
+                </tr>
+                </table>
+                <!-- END generated table -->
+            </section>
+            <section>
+                <img src="img/analyse_img/friendsconn_1.png">
+            </section>
+            <section>
+                <img src="img/analyse_img/friendsconn_2.png">
+            </section>
+            <section>
+                <img src="img/analyse_img/friendsconn_3.png">
+            </section>
+            <section>
+                <img src="img/analyse_img/friendsconn_4.png">
+            </section>
+            <section>
+                <h3>Quality of Features?!</h3>
+            </section>
+            <!-- ... -->
+        </section>
+
+
+        <!-- What's next? -->
+        <section>
+            <section>
+                <h2>What's next?</h2>
+                <ol>
+                    <li>Machine learning</li>
+                    <li>More machine learning</li>
+                    <li>Verify results</li>
+                    <li>???</li>
+                    <li>PROFIT</li>
+                </ol>
+            </section>
+        </section>
+
+        <!-- Feedback -->
+        <section>
+            <img data-src="http://www.bang2write.com/wp-content/uploads/2015/07/time_for_feedback.jpg">
+        </section>
+
+        <!-- End -->
+        <section data-background="#000000">
+            <div class="keypoint">Thanks for your attention</div>
+        </section>
+
+
+    </div>
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+    // More info https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        history: true,
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+            {src: 'plugin/markdown/marked.js'},
+            {src: 'plugin/markdown/markdown.js'},
+            {src: 'plugin/notes/notes.js', async: true},
+            {
+                src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad()
+            }
+            }
+        ]
+    })
+</script>
+</body>
+</html>
