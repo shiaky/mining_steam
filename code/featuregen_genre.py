@@ -23,7 +23,8 @@ lNumberOfGenres = 35
 bFileExistend = os.path.isfile(sOutputFileName)
 
 # set ThreadPool
-oPool = ThreadPool(processes=lNumberOfThreads)
+oMainPool = ThreadPool(processes=lNumberOfThreads)
+oHelperPool = ThreadPool(processes=lNumberOfThreads)
 
 dStart = time.time()
 # Read sqlite query results into a pandas DataFrame
@@ -54,8 +55,11 @@ def get_playtime_of_game_from_player(lPlayerId, lGameId):
 def get_genre_dist_and_totalplaytime_of_player(lPlayerId):
     aGenreDist = np.zeros(lNumberOfGenres)
     aGames = get_owned_games(lPlayerId)
-    # print("get genres of %i games" % (len(aGames)))
     lTotalPlaytime = 0
+    # DEBUG #### handle to many games
+    if len(aGames) > 250:
+        print("skip calculating genre dist because the person owns %i games" % len(aGames))
+        return None, 0
     for lGameId in aGames:
         aGenreIdx = get_genres_of_game(lGameId)
         lPlaytime = get_playtime_of_game_from_player(lPlayerId, lGameId)
@@ -95,7 +99,7 @@ def get_owned_games(lPlayerId):
 
 def explore_list_of_players(aPlayersToExplore):
     dicFriendsGameConnectivity = {"playerId": [], "playerGenreDistribution": [], "mainGenre": [], "mainGenrePercentage": [], "meanFriendsGenreDistribution": [], "friendsMainGenre": [], "friendsMainGenrePercentage": [
-    ], "palyerTotalPlaytime": [], "friendsTotalPlaytime": [], "numberOfPlayersGenres": [], "numberOfFriendsTotal": [], "numberOfFriendsConsidered": [], "numberOfFriendsWithoutPlayedGames": []}
+    ], "palyerTotalPlaytime": [], "friendsTotalPlaytime": [], "numberOfPlayersGenres": [], "numberOfFriendsTotal": [], "numberOfFriendsConsidered": [], "numberOfSkipedFriends": []}
 
     for lExploredPlayerId in aPlayersToExplore:
         dStart = time.time()
@@ -164,7 +168,7 @@ def explore_list_of_players(aPlayersToExplore):
             lNumberOfFriends)
         dicFriendsGameConnectivity["numberOfFriendsConsidered"].append(
             lNumberOfFriendsConsidered)
-        dicFriendsGameConnectivity["numberOfFriendsWithoutPlayedGames"].append(
+        dicFriendsGameConnectivity["numberOfSkipedFriends"].append(
             lNumberOfFriendsWithoutPlayedGames)
 
         print("%f, player %i, mg: %i, fg: %i, #f: %i, #fwpg: %i" %
@@ -176,16 +180,24 @@ def explore_list_of_players(aPlayersToExplore):
 
 if __name__ == "__main__":
     dicFriendsGameConnectivity = {"playerId": [], "playerGenreDistribution": [], "mainGenre": [], "mainGenrePercentage": [], "meanFriendsGenreDistribution": [], "friendsMainGenre": [], "friendsMainGenrePercentage": [
-    ], "palyerTotalPlaytime": [], "friendsTotalPlaytime": [], "numberOfPlayersGenres": [], "numberOfFriendsTotal": [], "numberOfFriendsConsidered": [], "numberOfFriendsWithoutPlayedGames": []}
-    aPlayersToExploreFulltake = oPlayers.sample(
-        n=lNumberOfPlayersToTest, replace=False)["Id"].values
+    ], "palyerTotalPlaytime": [], "friendsTotalPlaytime": [], "numberOfPlayersGenres": [], "numberOfFriendsTotal": [], "numberOfFriendsConsidered": [], "numberOfSkipedFriends": []}
+    aPlayersToExploreFulltake = list(oPlayers.sample(
+        n=lNumberOfPlayersToTest, replace=False)["Id"].values)
+
+    # DEBUG #### Remove all players with more than 30 friends
+    for lPlayer in aPlayersToExploreFulltake:
+        lNrOfFriends = len(get_player_friends_crawled(lPlayer))
+        if lNrOfFriends > 30:
+            aPlayersToExploreFulltake.remove(lPlayer)
+            print("drop player %i because he has %i friends" %
+                  (lPlayer, lNrOfFriends))
 
     aPlayersToExploreSplit = np.array_split(
         aPlayersToExploreFulltake, lNumberOfThreads)
 
     aProcesses = []
     for aPlayersToExplore in aPlayersToExploreSplit:
-        aProcesses.append(oPool.apply_async(
+        aProcesses.append(oMainPool.apply_async(
             explore_list_of_players, (aPlayersToExplore,)))
 
     for i in range(lNumberOfThreads):
@@ -213,8 +225,8 @@ if __name__ == "__main__":
             dicResult["numberOfFriendsTotal"])
         dicFriendsGameConnectivity["numberOfFriendsConsidered"].extend(
             dicResult["numberOfFriendsConsidered"])
-        dicFriendsGameConnectivity["numberOfFriendsWithoutPlayedGames"].extend(
-            dicResult["numberOfFriendsWithoutPlayedGames"])
+        dicFriendsGameConnectivity["numberOfSkipedFriends"].extend(
+            dicResult["numberOfSkipedFriends"])
 
     oExportDataFrame = pd.DataFrame(dicFriendsGameConnectivity)
 
