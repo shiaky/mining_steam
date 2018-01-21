@@ -4133,6 +4133,10 @@ button,
   color: #ffebef !important;
 }
 
+.text-xxs {
+  font-size: 0.5rem !important;
+}
+
 .text-xs {
   font-size: 1rem !important;
 }
@@ -8001,6 +8005,10 @@ button,
 
   .xl\:hover\:text-pink-lightest:hover {
     color: #ffebef !important;
+  }
+
+  .xl\:text-xxs {
+    font-size: 0.5rem !important;
   }
 
   .xl\:text-xs {
