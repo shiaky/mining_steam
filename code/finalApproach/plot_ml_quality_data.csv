@@ -1,5 +1,7 @@
 value,class,Method
 0.74,precision,machine learning
 0.86,recall,machine learning
-0.58,precision,always take nc
+0.747,accuracy,machine learning
+0.5803,precision,always take nc
 1.0,recall,always take nc
+0.5803,accuracy,always take nc
