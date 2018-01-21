@@ -1,0 +1,156 @@
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Age of the player account in days ###
+count    10000.000000
+mean      1578.665989
+std       1022.968087
+min         11.324595
+25%        848.078082
+50%       1392.044161
+75%       2023.576950
+max       5192.734583
+Name: accountAgePersonal_days, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Number of games the player owns ###
+count    10000.000000
+mean        61.375700
+std        112.585123
+min          1.000000
+25%         10.000000
+50%         26.000000
+75%         64.000000
+max       1482.000000
+Name: nrOfGamesOwned, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Number of games the player played ###
+count    10000.000000
+mean        38.134000
+std         65.104809
+min          1.000000
+25%          6.000000
+50%         17.000000
+75%         42.000000
+max        925.000000
+Name: nrOfGamesPlayed, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Total playtime of player in days ###
+count    10000.000000
+mean        85.908950
+std        100.345598
+min          0.418750
+25%         27.889757
+50%         61.315278
+75%        114.038889
+max       2714.243056
+Name: totalPlaytime_days, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Number of friends the player has ###
+count    10000.000000
+mean        17.890200
+std         24.886504
+min          6.000000
+25%          8.000000
+50%         11.000000
+75%         18.000000
+max        425.000000
+Name: nrOfFriends, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Mean number of games owned by friends ###
+count    10000.000000
+mean        70.801876
+std         89.213312
+min          1.250000
+25%         24.363636
+50%         43.000000
+75%         77.861607
+max        998.461538
+Name: meanNrOfGamesOwnedFriends, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Mean number of games played by friends ###
+count    10000.000000
+mean        43.193453
+std         51.026967
+min          0.571429
+25%         15.328947
+50%         27.696154
+75%         49.902273
+max        555.000000
+Name: meanNumberOfPGameslayedFriends, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Mean playtime of friends ###
+count    10000.000000
+mean        92.588457
+std         69.679509
+min          0.002199
+25%         51.030472
+50%         81.979167
+75%        119.706527
+max       2128.997531
+Name: meanPlaytimeFriends_days, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Mean age of the friends accounts in days ###
+count    9987.000000
+mean     1584.058769
+std       667.127333
+min        79.914389
+25%      1134.868571
+50%      1484.651603
+75%      1924.934327
+max      5183.989654
+Name: meanAccountAgeFriendsPersonal_days, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Mean playtime of player in hours/day ###
+count    10000.000000
+mean         1.584946
+std          1.712650
+min          0.005538
+25%          0.561405
+50%          1.223846
+75%          2.151690
+max         49.781175
+Name: playtimePerDayAccountage, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Mean playtime of friends in hours/day ###
+count    9987.000000
+mean        1.462425
+std         0.927236
+min         0.000041
+25%         0.934357
+50%         1.398334
+75%         1.863264
+max        25.663342
+Name: playtimeFriendsPerDayAccountage, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Difference playtime player - playtime friends in hours/day ###
+count    9987.000000
+mean        0.122543
+std         1.644148
+min       -24.521916
+25%        -0.566220
+50%        -0.090001
+75%         0.551429
+max        47.896108
+Name: diffPlaytimeDay, dtype: float64
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+### Difference games owned - games played of player ###
+count    10000.000000
+mean        23.241700
+std         57.443825
+min          0.000000
+25%          2.000000
+50%          7.000000
+75%         21.000000
+max       1326.000000
+Name: diffGameOwnedPlayed, dtype: float64
+

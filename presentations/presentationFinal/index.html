@@ -49,8 +49,7 @@ under the empirical probability distribution and the area under the theoretical 
         <section>
             <h2>Agenda</h2>
             <ol class="fragmented text-grey">
-                <li class="fragment">(Really short) introduction</li>
-                <li class="fragment">Get in touch with the storyline</li>
+                <li class="fragment">Our storyline</li>
                 <li class="fragment">Crawling and biases</li>
                 <li class="fragment">Used machine learning methods</li>
                 <li class="fragment">Selected features</li>
@@ -63,7 +62,7 @@ under the empirical probability distribution and the area under the theoretical 
         <!-- Storyline -->
         <section>
             <h1 class="text-2xl mb-8">
-                Get in touch with our storyline
+                Our storyline
             </h1>
         </section>
 
@@ -107,42 +106,47 @@ under the empirical probability distribution and the area under the theoretical 
             </h2>
         </section>
 
-        <section class="text-left text-sm">
+        <section class="text-sm">
             <p class="text-grey">First of all, there is no uniform definition of a
                 <span class="text-orange">casual player</span>.
             </p>
             <p class="text-grey fragment">
                 For us, players of this category <span class="font-bold">don't play as much</span>
                 as other players. They have <span class="font-bold">varying online times</span> through the week and
-                <span class="font-bold">don't plan to play</span> in comparison to
+                <span class="font-bold">don't plan exact playtimes</span> as
                 <span class="text-pink">non-casual players</span>.
             </p>
         </section>
 
         <section>
-            <p class="text-grey">
-                Based on an <em>American Time Use Survey Summary*</em> people spend a bit more than 5 hours on leisure
-                activities per day [1]:
-            </p>
             <blockquote class="text-sm text-grey w-full fragment">
                 On an average day, nearly everyone age 15 and over (96 percent) engaged
                 in some sort of leisure activity, such as watching TV, socializing, or
                 exercising. Men spent 44 minutes per day more in these activities than
-                did women (5.5 hours, compared with 4.8 hours).
+                did women (5.5 hours, compared with 4.8 hours).[1]
             </blockquote>
             <p class="text-grey mb-0 fragment">
                 So we classify users that have a playtime less than or equal to 1 hour as
                 <span class="text-orange">casual</span> and greater than 1 hour per day as
                 <span class="text-pink">non-casual</span>
             </p>
-            <span class="text-xs">[1] https://www.bls.gov/news.release/atus.nr0.htm</span>
+            <span class="text-xs">[1]American Time Use Survey Summary, https://www.bls.gov/news.release/atus.nr0.htm</span>
+
+            <aside class="notes">
+                Based on an <em>American Time Use Survey Summary</em> people spend a bit more than 5 hours on leisure
+                activities per day
+            </aside>
         </section>
 
         <section>
             <!-- TODO: Vllt wo anders? -->
-            <p class="text-grey">A problem that occurred was the unprecise playtime data of Steam. For each player the
+            <h2>Problem</h2>
+            <h3>No/badly sectioned playtime data of Steam</h3>
+            <aside class="notes">
+                For each player the
                 Steam API only provided data of the last 14 days and the total playtime. Because there are no daily
-                statistics, we used the total playtime in relation to the registration date of the player.</p>
+                statistics, we used the total playtime in relation to the registration date of the player.
+            </aside>
         </section>
 
 
@@ -154,65 +158,200 @@ under the empirical probability distribution and the area under the theoretical 
             </h1>
         </section>
 
+        <section>
+            <p class="text-grey">
+                Before we jump into the machine learning part, we want to provide information about
+                our crawling methods and resulting biases.
+            </p>
+        </section>
+
+        <section>
+            <p class="text-grey">
+                Instead of a random walk, we crawled Steam by another technique:
+            </p>
+            <ol class="text-grey text-sm">
+                <li class="fragment">Take a random entry player</li>
+                <li class="fragment">Crawl the player</li>
+                <li class="fragment">Crawl the players friends</li>
+                <li class="fragment">Take a random friend</li>
+                <li class="fragment">If the player has no friends (left), take a new random player</li>
+                <li class="fragment">Jump back to step 2</li>
+            </ol>
+        </section>
+
+        <section>
+            <p class="text-grey">
+                This makes sense because we needed players with some friends, otherwise we have no chance to infer
+                information on the player, making the data record worthless for us.
+            </p>
+            <p class="text-grey fragment">
+                <!-- TODO: Verify friend count -->
+                But it also impacts our data set, leaving us with players who only have 3 friends or more.
+            </p>
+        </section>
 
         <!--
-        Nicht komplett random, da man Spieler + dessen Freunde braucht
-        aus diesen Freunden einen rauspicken und dann wieder Freunde des Spielers crawlen etc.
-
-        Biased data!
-
+        TODO: Biased/Unbiased comparison?
+        <section></section>
         -->
+
+        <!-- Used machine learning methods -->
         <section>
             <h1 class="text-2xl mb-8">
                 Used machine learning methods
             </h1>
         </section>
-        <!-- Neural Networks -->
-        <!--
-        Kurze Erklärung, sh alte Präsi
-        Scikit learn, welche parameter etc
-        -->
+
+        <section>
+            <h1 class="text-xl mb-8">
+                Deep Learning
+            </h1>
+
+            <h2 class="text-lg mb-8 fragment">
+                But what is it and how does it work?
+            </h2>
+        </section>
+
+        <section>
+            <h2 class="text-lg mb-8">
+                A short summary
+            </h2>
+
+            <div class="fragment">
+                <img class="w-3/4 border-0 bg-white p-8 rounded" src="img/deeplearning_structure.png">
+                <p>Structure of a neural network</p>
+                <p class="text-xxs">
+                    Original: Chrislb, derivative work: HELLKNOWZ
+                    https://commons.wikimedia.org/w/index.php?curid=11397827 (CC-BY-SA 3.0)
+                </p>
+            </div>
+            <aside class="notes">
+                <ul>
+                    <li>Structure of Neural network</li>
+                    <li>Explain input, hidden, output layer</li>
+                    <li>Use 3 hidden layers with 10 neurons</li>
+                    <li>Grid search for best hidden layer and neuron count</li>
+                </ul>
+            </aside>
+        </section>
+
+        <section>
+            <img class="w-3/4 border-0 bg-white p-8 rounded" src="img/nn_compared_to_brain.png">
+            <p>Comparison: Neural networks and the human brain</p>
+            <p class="text-xxs">
+                https://www.intechopen.com/books/artificial-neural-networks-architectures-and-applications/applications-of-artificial-neural-networks-in-chemical-problems
+                (CC-BY 3.0)
+            </p>
+        </section>
+
+        <section>
+            <img class="w-4/5 border-0 bg-white p-8 rounded" src="img/relu.png">
+            <p>ReLU activation function</p>
+            <p class="text-xxs">
+                https://relinklabs.com/imager/uploads/images/1107/Screen-Shot-2017-06-23-at-1.27.11-PM_d4e4e04a52bfbdbeab5ba4d2cf1d1390.png
+            </p>
+            <aside class="notes">
+                <ul>
+                    <li>rectified linear unit</li>
+                    <li>most popular activation function</li>
+                    <li>Fits into our data model and selected features</li>
+                    <li>Sparse activation: randomly initialized network, only about 50% of hidden units are activated
+                        (having a non-zero output).
+                    </li>
+                </ul>
+            </aside>
+        </section>
+
+
+        <!-- Selected Features -->
         <section>
             <h1 class="text-2xl mb-8">
                 Selected features
             </h1>
         </section>
-        <!-- Features -->
-        <!--
-        @Talex
-        -->
+
+        <section>
+            <ol class="text-grey">
+                <li>Number of friends</li>
+                <li class="fragment">Average account age of friends</li>
+                <li class="fragment">Average playtime of friends</li>
+                <li class="fragment">Average game count of friends</li>
+            </ol>
+            <aside class="notes">
+                All histograms are rectified: ((value-mean)< 2*std)
+            </aside>
+        </section>
+
+        <section>
+            <img class="w-3/4" src="img/plots/account_age_hist.png">
+        </section>
+
+        <section>
+            <img class="w-3/4" src="img/plots/daily_playtime_hours.png">
+        </section>
+        <section>
+            <img class="w-3/4" src="img/plots/diff_playtime.png">
+        </section>
+        <section>
+            <img class="w-3/4" src="img/plots/games_owned_hist.png">
+        </section>
+
+        <!-- TODO: Diff charts -_>
+
+        <!-- Baseline and results -->
+
         <section>
             <h1 class="text-2xl mb-8">
                 Baseline and results
             </h1>
         </section>
-        <!-- Baseline and results -->
+
         <!--
         1. Baseline -> Guess the most likely value
         2. Baseline -> Are friends casual/non-casual players? (Still 10% better!)
+        TODO: Confusion matrix!
         -->
+
+        <!-- Improvements and ideas -->
         <section>
             <h1 class="text-2xl mb-8">
                 Improvements and ideas
             </h1>
         </section>
-        <!-- Improvements and ideas -->
         <!--
         Other features tested: ... | They all sucked
+       * die durchschnittliche logofftime hat schlechtere ergebnisse gebracht
         Predicting games: We Tried it, but wasn't reliable at all
+        Using playtime per game?
         -->
+
+        <!-- Concluding words -->
         <section>
             <h1 class="text-2xl mb-8">
                 Concluding words
             </h1>
+            <aside class="notes">
+                <ul>
+                    <li>
+                        Pivot after we saw that data wasn't as heterogeneous as we thought
+                    </li>
+                    <li>
+                        Decent results
+                    </li>
+                    <li>
+                        Versatile methodologies
+                    </li>
+                    <li>
+                        Hardest part: Understanding the data and see what they are capable of
+                    </li>
+                    <li>
+                        Great takeway for all of us
+                    </li>
+                </ul>
+            </aside>
         </section>
-        <!-- Concluding words -->
-        <!--
-        Clever pivot after we saw that data wasn't as heterogeneous as we thought
-        Decent results
-        Versatile methodologies
-        -->
 
+        <!-- Mic drop -->
         <section data-background="https://media.giphy.com/media/3o7qDEq2bMbcbPRQ2c/giphy.gif">
             <h1 class="text-2xl mb-8 p-2 bg-blue-darkest">
                 Thanks for your attention!
