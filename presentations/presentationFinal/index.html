@@ -20,13 +20,6 @@
 7. Ideas und Improvements vortragen (was hat geklappt, was nicht)
 8. Ausblick (Games prediction ging leider nicht so)
 9. ENDE
-
-
-WICHTIG:
-*Histogramme sind bereinigt mit ((wert-mean)< 2*std)
-
-*Anzahl der Bins sind nach Freedman-Diaconis rule berechnet (is designed to minimize the difference between the area
-under the empirical probability distribution and the area under the theoretical probability distribution)
 -->
 <div class="reveal">
     <div class="slides">
@@ -130,7 +123,9 @@ under the empirical probability distribution and the area under the theoretical 
                 <span class="text-orange">casual</span> and greater than 1 hour per day as
                 <span class="text-pink">non-casual</span>
             </p>
-            <span class="text-xs">[1]American Time Use Survey Summary, https://www.bls.gov/news.release/atus.nr0.htm</span>
+            <p class="text-xs text-grey">
+                [1]American Time Use Survey Summary, https://www.bls.gov/news.release/atus.nr0.htm
+            </p>
 
             <aside class="notes">
                 Based on an <em>American Time Use Survey Summary</em> people spend a bit more than 5 hours on leisure
@@ -139,13 +134,12 @@ under the empirical probability distribution and the area under the theoretical 
         </section>
 
         <section>
-            <!-- TODO: Vllt wo anders? -->
             <h2>Problem</h2>
             <h3>No/badly sectioned playtime data of Steam</h3>
             <aside class="notes">
-                For each player the
-                Steam API only provided data of the last 14 days and the total playtime. Because there are no daily
-                statistics, we used the total playtime in relation to the registration date of the player.
+                For each player the Steam API only provided data of the last 14 days and the total playtime. Because
+                there are no daily statistics, we used the total playtime in relation to the registration date of the
+                player.
             </aside>
         </section>
 
@@ -219,8 +213,8 @@ under the empirical probability distribution and the area under the theoretical 
 
             <div class="fragment">
                 <img class="w-3/4 border-0 bg-white p-8 rounded" src="img/deeplearning_structure.png">
-                <p>Structure of a neural network</p>
-                <p class="text-xxs">
+                <p class="text-grey">Structure of a neural network</p>
+                <p class="text-xxs text-grey">
                     Original: Chrislb, derivative work: HELLKNOWZ
                     https://commons.wikimedia.org/w/index.php?curid=11397827 (CC-BY-SA 3.0)
                 </p>
@@ -237,17 +231,17 @@ under the empirical probability distribution and the area under the theoretical 
 
         <section>
             <img class="w-3/4 border-0 bg-white p-8 rounded" src="img/nn_compared_to_brain.png">
-            <p>Comparison: Neural networks and the human brain</p>
-            <p class="text-xxs">
+            <p class="text-grey">Comparison: Neural networks and the human brain</p>
+            <p class="text-xxs text-grey">
                 https://www.intechopen.com/books/artificial-neural-networks-architectures-and-applications/applications-of-artificial-neural-networks-in-chemical-problems
                 (CC-BY 3.0)
             </p>
         </section>
 
         <section>
-            <img class="w-4/5 border-0 bg-white p-8 rounded" src="img/relu.png">
-            <p>ReLU activation function</p>
-            <p class="text-xxs">
+            <img class="w-2/3 border-0 bg-white p-8 rounded" src="img/relu.png">
+            <p class="text-grey">ReLU activation function</p>
+            <p class="text-xxs text-grey">
                 https://relinklabs.com/imager/uploads/images/1107/Screen-Shot-2017-06-23-at-1.27.11-PM_d4e4e04a52bfbdbeab5ba4d2cf1d1390.png
             </p>
             <aside class="notes">
@@ -278,12 +272,28 @@ under the empirical probability distribution and the area under the theoretical 
                 <li class="fragment">Average game count of friends</li>
             </ol>
             <aside class="notes">
-                All histograms are rectified: ((value-mean)< 2*std)
+                <ul>
+                    <li>All histograms are rectified: ((value-mean)< 2*std)</li>
+                    <li> Removed a lot of "noisy" games. Only 1500 most-owned games included in data set</li>
+                    <li>Bins calculated by Freedman-Diaconis rule</li>
+                    <li>
+                        Rule is designed to minimize the difference between the area
+                        under the empirical probability distribution and the area under the theoretical probability
+                        distribution
+                    </li>
+                </ul>
             </aside>
         </section>
 
         <section>
+            <img class="w-3/4" src="img/plots/number_of_friends_hist.png">
+        </section>
+
+        <section>
             <img class="w-3/4" src="img/plots/account_age_hist.png">
+        </section>
+        <section>
+            <img class="w-3/4" src="img/plots/diff_account_age_player_friends.png">
         </section>
 
         <section>
@@ -292,11 +302,13 @@ under the empirical probability distribution and the area under the theoretical 
         <section>
             <img class="w-3/4" src="img/plots/diff_playtime.png">
         </section>
+
         <section>
             <img class="w-3/4" src="img/plots/games_owned_hist.png">
         </section>
-
-        <!-- TODO: Diff charts -_>
+        <section>
+            <img class="w-3/4" src="img/plots/diff_games_owned_player_friends.png">
+        </section>
 
         <!-- Baseline and results -->
 
@@ -306,24 +318,55 @@ under the empirical probability distribution and the area under the theoretical 
             </h1>
         </section>
 
-        <!--
-        1. Baseline -> Guess the most likely value
+        <!-- TODO: Insert charts here
+        Notes:
+                1. Baseline -> Guess the most likely value
         2. Baseline -> Are friends casual/non-casual players? (Still 10% better!)
-        TODO: Confusion matrix!
         -->
+
+        <section>
+            <h1>Confusion Matrix</h1>
+            <table class="fragment text-grey">
+                <tr class="border-none text-center">
+                    <td class="text-center align-middle">n = 10⁴</td>
+                    <td class="border-solid border-4 text-center">Predicted: NO</td>
+                    <td class="border-solid border-4 text-center">Predicted: YES</td>
+                    <td class="border-none"></td>
+                </tr>
+                <tr>
+                    <td class="border-solid border-4 text-center">Actual:<br> NO</td>
+                    <td class="border-solid border-2 text-center">TN = 2545</td>
+                    <td class="border-solid border-2 text-center">FP = 1730</td>
+                    <td class="border-solid border-2 border-l-4 text-center">4275</td>
+                </tr>
+                <tr>
+                    <td class="border-solid border-4 text-center">Actual: YES</td>
+                    <td class="border-solid border-2 text-center">FN = 790</td>
+                    <td class="border-solid border-2 text-center">TP = 4935</td>
+                    <td class="border-solid border-2 border-l-4 text-center">5725</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="border-solid border-2 border-t-4 text-center">3335</td>
+                    <td class="border-solid border-2 border-t-4 text-center">6665</td>
+                    <td class=""></td>
+                </tr>
+            </table>
+        </section>
+
 
         <!-- Improvements and ideas -->
         <section>
             <h1 class="text-2xl mb-8">
                 Improvements and ideas
             </h1>
+            <aside class="notes">
+                <ul>
+                    <li>First we used plain playtime total, now in relation to regdate</li>
+                    <li>We tried average logOffTime, led to bad results because it provides no real value</li>
+                </ul>
+            </aside>
         </section>
-        <!--
-        Other features tested: ... | They all sucked
-       * die durchschnittliche logofftime hat schlechtere ergebnisse gebracht
-        Predicting games: We Tried it, but wasn't reliable at all
-        Using playtime per game?
-        -->
 
         <!-- Concluding words -->
         <section>
@@ -342,8 +385,11 @@ under the empirical probability distribution and the area under the theoretical 
                         Versatile methodologies
                     </li>
                     <li>
-                        Hardest part: Understanding the data and see what they are capable of
+                        Hardest part: Understanding the data and see what they are capable of and make sth. out of
+                        not so rich data
                     </li>
+                    <li>Only off/on on profiles, no inference for single features possible</li>
+                    <li>Not many coherent features and if, it's very tedious</li>
                     <li>
                         Great takeway for all of us
                     </li>
