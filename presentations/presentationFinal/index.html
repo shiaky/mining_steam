@@ -29,9 +29,9 @@
             </h1>
             <h2 class="text-lg">Final presentation</h2>
             <p class="text-sm text-grey">
-                Robin Herrmann,<br/>
                 Alexander Thierfelder,<br/>
-                Alexander Lichter
+                Alexander Lichter, <br/>
+                Robin Herrmann
             </p>
             <p>
                 <small>WS 2017/18</small>
@@ -46,7 +46,7 @@
                 <li class="fragment">Crawling and biases</li>
                 <li class="fragment">Used machine learning methods</li>
                 <li class="fragment">Selected features</li>
-                <li class="fragment">Baseline and <span class="text-green-dark">results</span></li>
+                <li class="fragment">Baselines and <span class="text-green-dark">results</span></li>
                 <li class="fragment">Improvements and ideas</li>
                 <li class="fragment">Concluding words</li>
             </ol>
@@ -88,7 +88,7 @@
             <p class="text-grey">Why not take all information we can get from the players friends and infer if the
                 player is a <span class="text-orange">casual</span> or <span class="text-pink">non-casual</span> player?
             </p>
-            <p class="fragment text-2xl">🎉</p>
+            <p class="fragment text-2xl">🎉🦄</p>
         </section>
 
         <section>
@@ -112,16 +112,15 @@
         </section>
 
         <section>
-            <blockquote class="text-sm text-grey w-full fragment">
+            <blockquote class="text-sm text-grey w-full">
                 On an average day, nearly everyone age 15 and over (96 percent) engaged
                 in some sort of leisure activity, such as watching TV, socializing, or
                 exercising. Men spent 44 minutes per day more in these activities than
                 did women (5.5 hours, compared with 4.8 hours).[1]
             </blockquote>
-            <p class="text-grey mb-0 fragment">
-                So we classify users that have a playtime less than or equal to 1 hour as
-                <span class="text-orange">casual</span> and greater than 1 hour per day as
-                <span class="text-pink">non-casual</span>
+            <p class="text-grey my-8 fragment">
+                <span class="text-orange">Casual</span>: <= 1 hour playtime per day<br>
+                <span class="text-pink">Non-casual</span> > 1 hour playtime per day
             </p>
             <p class="text-xs text-grey">
                 [1]American Time Use Survey Summary, https://www.bls.gov/news.release/atus.nr0.htm
@@ -129,13 +128,15 @@
 
             <aside class="notes">
                 Based on an <em>American Time Use Survey Summary</em> people spend a bit more than 5 hours on leisure
-                activities per day
+                activities per day.<br>
+                Casual: <= 1 hour playtime per day<br>
+                Non-casual > 1 hour playtime per day
             </aside>
         </section>
 
         <section>
             <h2>Problem</h2>
-            <h3>No/badly sectioned playtime data of Steam</h3>
+            <h3 class="fragment"><span class="text-red-light">No/badly sectioned</span> playtime data of Steam</h3>
             <aside class="notes">
                 For each player the Steam API only provided data of the last 14 days and the total playtime. Because
                 there are no daily statistics, we used the total playtime in relation to the registration date of the
@@ -150,38 +151,44 @@
             <h1 class="text-2xl mb-8">
                 Crawling and biases
             </h1>
-        </section>
-
-        <section>
-            <p class="text-grey">
+            <aside class="notes">
                 Before we jump into the machine learning part, we want to provide information about
                 our crawling methods and resulting biases.
-            </p>
+            </aside>
         </section>
 
         <section>
-            <p class="text-grey">
-                Instead of a random walk, we crawled Steam by another technique:
-            </p>
             <ol class="text-grey text-sm">
-                <li class="fragment">Take a random entry player</li>
+                <li>Take a random entry player</li>
                 <li class="fragment">Crawl the player</li>
                 <li class="fragment">Crawl the players friends</li>
                 <li class="fragment">Take a random friend</li>
                 <li class="fragment">If the player has no friends (left), take a new random player</li>
                 <li class="fragment">Jump back to step 2</li>
             </ol>
+            <aside class="notes">
+                Instead of a random walk, we crawled Steam by another technique.
+            </aside>
         </section>
 
         <section>
-            <p class="text-grey">
-                This makes sense because we needed players with some friends, otherwise we have no chance to infer
-                information on the player, making the data record worthless for us.
-            </p>
-            <p class="text-grey fragment">
-                <!-- TODO: Verify friend count -->
-                But it also impacts our data set, leaving us with players who only have 3 friends or more.
-            </p>
+            <img class="w-3/4" src="img/plots/comparison_crawling.png">
+        </section>
+
+        <section>
+            <h1>Impact</h1>
+
+            <aside class="notes">
+                <ul>
+                    <li>This makes sense because we needed players with some friends, otherwise we have no chance to
+                        infer
+                        information on the player, making the data record worthless for us.
+                    </li>
+                    <li>
+                        But it also impacts our data set, leaving us with players who only have 6 friends or more.
+                    </li>
+                </ul>
+            </aside>
         </section>
 
         <!--
@@ -310,22 +317,16 @@
             <img class="w-3/4" src="img/plots/diff_games_owned_player_friends.png">
         </section>
 
-        <!-- Baseline and results -->
+        <!-- Baselines and results -->
 
         <section>
             <h1 class="text-2xl mb-8">
-                Baseline and results
+                Baselines and results
             </h1>
         </section>
 
-        <!-- TODO: Insert charts here
-        Notes:
-                1. Baseline -> Guess the most likely value
-        2. Baseline -> Are friends casual/non-casual players? (Still 10% better!)
-        -->
-
         <section>
-            <h1>Confusion Matrix</h1>
+            <h1 class="text-2xl">Confusion Matrix</h1>
             <table class="fragment text-grey">
                 <tr class="border-none text-center">
                     <td class="text-center align-middle">n = 10⁴</td>
@@ -352,8 +353,34 @@
                     <td class=""></td>
                 </tr>
             </table>
+            <p class="fragment text-grey text-center">
+                Precision: 0,74 <span class="text-orange">|</span>
+                Recall: 0,86 <span class="text-pink">|</span>
+                F1-Measure: 0,7955
+            </p>
+            <aside class="notes">
+                <ul>
+                    <li>Precision = tp / tp + fp</li>
+                    <li>Recall = tp / tp + fn</li>
+                    <li>F1-Measure = 2tp / 2tp +fp + fn</li>
+                </ul>
+            </aside>
         </section>
 
+
+        <section>
+            <img class="w-3/4" src="img/plots/quality_ml.png">
+
+            <aside class="notes">
+                <ul>
+                    <li>1. Baseline: Guess the most likely value (nc)</li>
+                    <li>2. Baseline: Are friends casual/non-casual players?</li>
+                    <li>Recall for Baseline 1 is not relevant, bc it always guesses true</li>
+                    <li>Accuracy for Baseline 1 is similar to precision, bc no negatives</li>
+                    <li>Accuracy in compersion to Baseline 2</li>
+                </ul>
+            </aside>
+        </section>
 
         <!-- Improvements and ideas -->
         <section>
